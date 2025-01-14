@@ -1,0 +1,108 @@
+@import url("https://p.typekit.net/p.css?s=1&k=mxq3hly&ht=tk&f=44521.44524.44525&a=76940801&app=typekit&e=css");
+@import url('https://fonts.googleapis.com/css2?family=Khula:wght@300;400;600;700;800&display=swap');
+
+/* Define the font-face for degular-display */
+@font-face {
+  font-family: "degular-display";
+  src: url("https://use.typekit.net/af/73a878/00000000000000007735c854/30/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=i2&v=3") format("woff2"),
+    url("https://use.typekit.net/af/73a878/00000000000000007735c854/30/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=i2&v=3") format("woff"),
+    url("https://use.typekit.net/af/73a878/00000000000000007735c854/30/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=i2&v=3") format("opentype");
+  font-display: auto;
+  font-style: italic;
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "degular-display";
+  src: url("https://use.typekit.net/af/3e504d/00000000000000007735c85b/30/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff2"),
+    url("https://use.typekit.net/af/3e504d/00000000000000007735c85b/30/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff"),
+    url("https://use.typekit.net/af/3e504d/00000000000000007735c85b/30/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("opentype");
+  font-display: auto;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "degular-display";
+  src: url("https://use.typekit.net/af/db0d0a/00000000000000007735c85f/30/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=i4&v=3") format("woff2"),
+    url("https://use.typekit.net/af/db0d0a/00000000000000007735c85f/30/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=i4&v=3") format("woff"),
+    url("https://use.typekit.net/af/db0d0a/00000000000000007735c85f/30/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=i4&v=3") format("opentype");
+  font-display: auto;
+  font-style: italic;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Tahoma';
+  src: url('./assets/fonts/Tahoma.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Tahoma';
+  src: url('./assets/fonts/Tahoma-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+.khula-light {
+  font-family: "Khula", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.khula-regular {
+  font-family: "Khula", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.khula-semibold {
+  font-family: "Khula", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.khula-bold {
+  font-family: "Khula", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.khula-extrabold {
+  font-family: "Khula", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+}
+
+
+
+:root {
+  --dynamic-text-color: white;
+  --background-color: #141414;
+  --text-white: #f5f5f5;
+  --logo-color: white;
+  --arrow-color:#DEFF00;
+  --footerText-color: #D9D9D9;
+  --popover-color :#DEFF00;
+  --navhover-color: #DEFF00;
+  --footerSpan-color: #DEFF00;
+  --hover-color:#DEFF00;
+  --arowDown-color:#DEFF00;
+  --arowUp-color:#fff;
+  --mobileUp-color:#DEFF00;
+  --mobileDown-color:#FFF;
+  --mobileOverlay-color:#141414;
+}
+
+body,
+html {
+  @apply font-degular;
+  @apply bg-body-bg;
+  @apply text-body-text;
+  position: relative;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
