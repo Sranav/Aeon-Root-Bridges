@@ -1,0 +1,200 @@
+import React, { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import './HomeCalander.css';
+
+const HotelSearching = () => {
+    const [formData, setFormData] = useState({
+        destination: '',
+        dates: '',
+        guests: { adults: 1, children: 0 },
+    });
+    const [showDestinationDropdown, setShowDestinationDropdown] = useState(false);
+    const [showGuestsDropdown, setShowGuestsDropdown] = useState(false);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+
+    const locations = ['New York', 'Paris', 'Tokyo', 'London'];
+
+    const handleDestinationFocus = () => {
+        setShowDestinationDropdown(true);
+        setShowGuestsDropdown(false);
+    };
+
+    const handleDestinationBlur = () => {
+        setTimeout(() => {
+            setShowDestinationDropdown(false);
+        }, 200);
+    };
+
+    const handleDestinationChange = (e) => {
+        setFormData((prev) => ({ ...prev, destination: e.target.value }));
+    };
+
+    const handleSelectLocation = (location) => {
+        setFormData((prev) => ({ ...prev, destination: location }));
+        setShowDestinationDropdown(false);
+    };
+
+    const handleDateChange = (dates) => {
+        const [start, end] = dates;
+        setStartDate(start);
+        setEndDate(end);
+        setFormData((prev) => ({ ...prev, dates: `${start ? start.toLocaleDateString() : ''} - ${end ? end.toLocaleDateString() : ''}` }));
+    };
+
+    const handleGuestChange = (type, operation) => {
+        setFormData((prev) => {
+            const updatedGuests = { ...prev.guests };
+            if (operation === 'increment') {
+                updatedGuests[type]++;
+            } else if (operation === 'decrement' && updatedGuests[type] > 0) {
+                updatedGuests[type]--;
+            }
+            return { ...prev, guests: updatedGuests };
+        });
+    };
+
+    const handleGuestsFocus = () => {
+        setShowGuestsDropdown(true);
+        setShowDestinationDropdown(false);
+    };
+
+    const handleGuestsBlur = () => {
+        setTimeout(() => {
+            setShowGuestsDropdown(false);
+        }, 200);
+    };
+
+    return (
+        <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-11/12 max-w-5xl bg-white shadow-lg rounded-xl p-4">
+                <div className="grid grid-cols-4 gap-4">
+                    {/* Destination */}
+                    <div className="flex flex-col relative">
+                        <label className="text-sm font-semibold text-gray-600">Where</label>
+                        <input
+                            type="text"
+                            value={formData.destination}
+                            onChange={handleDestinationChange}
+                            onFocus={handleDestinationFocus}
+                            onBlur={handleDestinationBlur}
+                            placeholder="Search Destination"
+                            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-[15px] p-5 text-black"
+                        />
+                        {showDestinationDropdown && (
+                            <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-lg mt-1 max-h-48 overflow-y-auto">
+                                {locations.map((location, index) => (
+                                    <div
+                                        key={index}
+                                        onClick={() => handleSelectLocation(location)}
+                                        className="px-4 py-2 cursor-pointer hover:bg-blue-500 hover:text-black text-black"
+                                    >
+                                        {location}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Dates */}
+                    <div className="flex flex-col">
+                        <label className="text-sm font-semibold text-gray-600">When</label>
+                        <DatePicker
+                            selected={startDate}
+                            startDate={startDate}
+                            endDate={endDate}
+                            onChange={handleDateChange}
+                            selectsRange
+                            monthsShown={2}
+                            dateFormat="MMM d, yyyy"
+                            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-[15px] p-5 text-black"
+                            placeholderText="Select Dates"
+                            minDate={new Date()}
+                        />
+                    </div>
+
+                    {/* Guests */}
+                    <div className="flex flex-col relative">
+                        <label className="text-sm font-semibold text-gray-600">Who</label>
+                        <input
+                            type="text"
+                            value={`${formData.guests.adults} Adults, ${formData.guests.children} Children`}
+                            readOnly
+                            onFocus={handleGuestsFocus}
+                            onBlur={handleGuestsBlur}
+                            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-[15px] p-5 text-black"
+                            placeholder="1 Guest(s)"
+                        />
+                        {showGuestsDropdown && (
+                            <div
+                                className="absolute top-full left-0 w-full bg-white shadow-lg rounded-lg mt-1 max-h-48"
+                                onMouseDown={(e) => e.preventDefault()} // Prevent dropdown from closing
+                            >
+                                <div className="flex justify-between px-4 py-2">
+                                    <div className="flex flex-col gap-14">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-black">Adults</span>
+                                            <div className="flex items-center space-x-2">
+                                                <button
+                                                    className="px-2 py-1 text-xl border rounded-full"
+                                                    onClick={() => handleGuestChange('adults', 'decrement')}
+                                                >
+                                                    <svg className='text-black' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                                        <path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+
+                                                </button>
+                                                <span className="text-black">{formData.guests.adults}</span>
+                                                <button
+                                                    className="px-2 py-1 text-xl border rounded-full"
+                                                    onClick={() => handleGuestChange('adults', 'increment')}
+                                                >
+                                                    <svg className='text-black' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                                        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-black">Children</span>
+                                            <div className="flex items-center space-x-2">
+                                                <button
+                                                    className="px-2 py-1 text-xl border rounded-full"
+                                                    onClick={() => handleGuestChange('children', 'decrement')}
+                                                >
+                                                    <svg className='text-black' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                                        <path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                </button>
+                                                <span className="text-black">{formData.guests.children}</span>
+                                                <button
+                                                    className="px-2 py-1 text-xl border rounded-full"
+                                                    onClick={() => handleGuestChange('children', 'increment')}
+                                                >
+                                                    <svg className='text-black' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                                        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Search Button */}
+                    <div className="flex items-end">
+                        <button className="bg-red-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 w-full leading-[50px]">
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default HotelSearching;
