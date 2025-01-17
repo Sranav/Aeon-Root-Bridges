@@ -1,0 +1,19 @@
+
+  
+  .react-datepicker__day-names {
+    white-space: nowrap;
+    margin-bottom: 10px !important;
+  }
+  .react-datepicker{
+    width: 630px;
+    display: flex
+;
+    justify-content: space-around;
+  }
+  .react-datepicker__current-month{
+    margin-bottom: 20px !important;
+  }
+  .react-datepicker__header{
+    background-color: #fff;
+    border-bottom: none !important;
+  }
