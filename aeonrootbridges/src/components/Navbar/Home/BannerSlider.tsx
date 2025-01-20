@@ -48,7 +48,7 @@ const BannerSlider = () => {
     }, []);
   
     return (
-      <div className="relative w-full h-screen">
+      <div className="relative w-full h-[800px]">
         {/* NavBar with transparency control */}
         <NavBar transparent={isTransparent} />
   
@@ -66,7 +66,7 @@ const BannerSlider = () => {
                 className="block w-full h-full object-cover"
                 alt={`Slide ${index + 1}`}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/25 to-black/75"></div>
+              <div className="absolute inset-0 "></div>
             </div>
           ))}
         </div>
@@ -86,7 +86,7 @@ const BannerSlider = () => {
         </div>
   
         {/* HotelSearching Component */}
-        <div className="absolute inset-x-0 bottom-2/4">
+        <div className="absolute inset-x-0 bottom-1/3">
           <HotelSearching />
         </div>
   

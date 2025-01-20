@@ -11,6 +11,7 @@ export default {
         tahoma: ['Tahoma', 'sans-serif'], // Adding Tahoma to the font family list
         degular: ['degular-display', 'sans-serif'],
       },
+      
       colors: {
         'body-bg': 'var(--background-color)',
         'body-text': '#F5F5F5',

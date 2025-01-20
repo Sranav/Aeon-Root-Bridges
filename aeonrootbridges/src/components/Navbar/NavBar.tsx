@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import AeonLogo from "@assets/images/aeonlogo1.png";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -8,35 +9,35 @@ const NavBar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   // Track scroll position to toggle navbar background
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-20 transition-colors duration-300 ${
-        isScrolled ? 'bg-gray-900 shadow-md' : 'bg-transparent'
+        isScrolled ? "bg-black shadow-md" : "bg-transparent"
       }`}
     >
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+      <div className="lg:mx-20 flex flex-wrap items-center justify-between p-4">
         {/* Logo Section */}
         <a
           href="#"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
-          <img
-            src="https://flowbite.com/docs/images/logo.svg"
-            className="h-8"
-            alt="Flowbite Logo"
-          />
+          <img src={AeonLogo} className="h-16" alt="Aeon Logo" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">
-            Aeo Root Bridges
+            Aeon Root Bridges
           </span>
         </a>
 
@@ -66,35 +67,62 @@ const NavBar = () => {
           </svg>
         </button>
 
-        {/* Fullscreen Menu (Visible on small screens) */}
+        {/* Fullscreen Menu (Overlay for small screens) */}
         <div
-          className={`${
-            isMenuOpen ? 'block' : 'hidden'
-          } fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center transition-all md:hidden`}
+          className={`fixed inset-0 bg-black bg-opacity-95 z-50 flex flex-col justify-center items-center transition-all duration-300 ${
+            isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
         >
+          <button
+            onClick={closeMenu}
+            className="absolute top-5 right-5 text-white text-3xl focus:outline-none"
+            aria-label="Close menu"
+          >
+            &#10005; {/* Close (X) Icon */}
+          </button>
           <ul className="font-medium flex flex-col space-y-6 text-white text-2xl">
             <li>
-              <a href="#" className="block py-2 px-3 hover:text-gray-400">
+              <a
+                href="#"
+                className="block py-2 px-3 hover:text-gray-400"
+                onClick={closeMenu}
+              >
                 Home
               </a>
             </li>
             <li>
-              <a href="#" className="block py-2 px-3 hover:text-gray-400">
+              <a
+                href="#"
+                className="block py-2 px-3 hover:text-gray-400"
+                onClick={closeMenu}
+              >
                 About
               </a>
             </li>
             <li>
-              <a href="#" className="block py-2 px-3 hover:text-gray-400">
+              <a
+                href="#"
+                className="block py-2 px-3 hover:text-gray-400"
+                onClick={closeMenu}
+              >
                 Services
               </a>
             </li>
             <li>
-              <a href="#" className="block py-2 px-3 hover:text-gray-400">
+              <a
+                href="#"
+                className="block py-2 px-3 hover:text-gray-400"
+                onClick={closeMenu}
+              >
                 Pricing
               </a>
             </li>
             <li>
-              <a href="#" className="block py-2 px-3 hover:text-gray-400">
+              <a
+                href="#"
+                className="block py-2 px-3 hover:text-gray-400"
+                onClick={closeMenu}
+              >
                 Contact
               </a>
             </li>
