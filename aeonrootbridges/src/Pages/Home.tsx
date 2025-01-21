@@ -1,10 +1,13 @@
 import React from 'react';
 import banner from "@assets/images/aeon.webp";
 import NavBar from '../components/Navbar/NavBar';
-import BannerSlider from '../components/Navbar/Home/BannerSlider';
-import PropertyCarousal from '../components/Navbar/Home/PropertyCarousal';
+import BannerSlider from '../components/Home/BannerSlider';
+import PropertyCarousal from '../components/Home/PropertyCarousal';
 import AboutSection from '../components/About/AboutSection';
 import ServiceSection from '../components/Services/ServiceSection';
+import BestExperiance from '../components/Home/BestExperiance';
+import Testimonial from '../components/Home/Testimonial';
+import Gallery from '../components/Home/Gallery';
 
 const Home = () => {
   return (
@@ -23,6 +26,15 @@ const Home = () => {
       <div className='mx-20 pb-10 pt-14'>
         <ServiceSection/>
       </div>
+      <div className='mx-20 pb-10 pt-14'>
+        
+        <BestExperiance/>
+      </div>
+      <div className='mx-20 pb-10 pt-14'>
+        
+        <Testimonial/>
+      </div>
+      <Gallery/>
     </>
   );
 };

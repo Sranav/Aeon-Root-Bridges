@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import banner1 from '@assets/images/Banner1.jpg';
 import banner2 from '@assets/images/Banner3.jpg';
+import BestExpBanner from '@assets/images/BestExpBanner.jpg';
 import HotelSearching from './HotelSearching';
-import NavBar from '../NavBar';
+import NavBar from '../Navbar/NavBar';
 
 const BannerSlider = () => {
     const slides = [
+      {image:BestExpBanner},
       { image: banner1 },
       { image: banner2 },
     ];
@@ -73,20 +75,21 @@ const BannerSlider = () => {
   
         {/* Heading and Subheading */}
         <div
-          className={`absolute top-1/4 w-full text-center text-white px-4 transition-transform duration-700 ease-in-out ${
+          className={`absolute top-2/4 w-full text-center text-white px-4 transition-transform duration-700 ease-in-out ${
             isAnimating ? 'opacity-0 -translate-y-10' : 'opacity-100 translate-y-0'
           }`}
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-2">
+          <h1 className="text-4xl md:text-5xl font-bold mb-2 ">
             Welcome to Your Dream Vacation
           </h1>
           <p className="text-lg md:text-xl font-light">
             Discover the best hotels and experiences curated just for you
           </p>
+          
         </div>
   
         {/* HotelSearching Component */}
-        <div className="absolute inset-x-0 bottom-1/3">
+        <div className="absolute inset-x-0 ">
           <HotelSearching />
         </div>
   
