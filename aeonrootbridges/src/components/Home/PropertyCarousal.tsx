@@ -65,12 +65,22 @@ const PropertyCarousal: React.FC = () => {
           {slides.map((slide, slideIndex) => (
             <div key={slideIndex} className="flex min-w-full flex-shrink-0">
               {slide.map((image, index) => (
-                <div key={index} className="min-w-[25%]" data-aos="fade-up" data-aos-delay={index * 200}>
+                <div
+                  key={index}
+                  className="relative group min-w-[25%] overflow-hidden"
+                  data-aos="fade-up"
+                  data-aos-delay={index * 200}
+                >
                   <img
                     src={image.src}
                     alt={`carousel-image-${slideIndex * 4 + index}`}
-                    className="w-[400px] object-cover h-[350px] shadow-xl"
+                    className="w-[400px] h-[350px] object-cover shadow-xl transition-transform duration-300 group-hover:scale-110"
                   />
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <button className="bg-white text-black py-2 px-4 rounded hover:bg-blue-600 hover:text-white ">
+                      Book Now
+                    </button>
+                  </div>
                   <div className="text-center mt-4">
                     <h3 className="text-xl font-semibold text-white">{image.title}</h3>
                     <p className="text-sm text-white opacity-80 mt-2">{image.description}</p>
@@ -80,6 +90,11 @@ const PropertyCarousal: React.FC = () => {
             </div>
           ))}
         </div>
+      </div>
+      <div className="flex justify-center pt-16">
+        <button className="bg-white text-black py-4 px-4 rounded hover:bg-black hover:text-white">
+          Explore Our Properties
+        </button>
       </div>
     </div>
   );
