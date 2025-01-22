@@ -1,101 +1,167 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import AOS from 'aos';
+import Slider from 'react-slick';
 import 'aos/dist/aos.css';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 import banner1 from '@assets/images/Banner1.jpg';
 import banner2 from '@assets/images/Banner3.jpg';
 
 const PropertyCarousal: React.FC = () => {
+  const [isSliderOpen, setIsSliderOpen] = useState(false);
+  const [currentImages, setCurrentImages] = useState<string[]>([]);
+  const sliderModalRef = useRef<HTMLDivElement | null>(null);
+
   const images = [
-    { src: banner1, title: "Luxury Room 1", description: "Relax in a spacious and luxurious room with modern amenities." },
-    { src: banner2, title: "Luxury Room 2", description: "Experience the best views and comfort in our premium rooms." },
-    { src: banner1, title: "Luxury Room 3", description: "A perfect place to unwind with elegant decor and comfort." },
-    { src: banner2, title: "Luxury Room 4", description: "Indulge in world-class amenities and breathtaking views." },
-    { src: banner1, title: "Luxury Room 5", description: "A serene escape with beautiful interiors and views." },
-    { src: banner2, title: "Luxury Room 6", description: "Stay in a contemporary room designed for relaxation and luxury." },
-    { src: banner1, title: "Luxury Room 7", description: "Unwind in style with spacious rooms and top-notch amenities." },
-    { src: banner2, title: "Luxury Room 8", description: "Enjoy a luxurious experience with exceptional service and comfort." },
+    {
+      src: banner1,
+      title: "The Lake House",
+      price: "$160 / Night",
+      location: "Disle-Sur-Mer, Southwest, France",
+      discount: null,
+      gallery: [banner1, banner2, banner1], // Gallery images for the slider
+    },
+    {
+      src: banner2,
+      title: "Restore the Chateau",
+      price: "$200 / Night",
+      location: "Disle-Sur-Mer, Southwest, France",
+      discount: null,
+      gallery: [banner2, banner1, banner2],
+    },
+    {
+      src: banner1,
+      title: "Maison Terranova",
+      price: "$140 / Night",
+      location: "Disle-Sur-Mer, Southwest, France",
+      discount: null,
+      gallery: [banner1, banner2, banner1],
+    },
   ];
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const slides = [];
-  for (let i = 0; i < images.length; i += 4) {
-    slides.push(images.slice(i, i + 4));
-  }
-
-  const slideCount = slides.length;
-
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % slideCount);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + slideCount) % slideCount);
-  };
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
 
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+
+  const openSlider = (gallery: string[]) => {
+    setCurrentImages(gallery);
+    setIsSliderOpen(true);
+  };
+
+  const closeSlider = () => {
+    setIsSliderOpen(false);
+    setCurrentImages([]);
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      sliderModalRef.current &&
+      !sliderModalRef.current.contains(event.target as Node)
+    ) {
+      closeSlider();
+    }
+  };
+
+  useEffect(() => {
+    if (isSliderOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSliderOpen]);
+
   return (
-    <div className="relative max-w-full mx-auto">
-      <div className="absolute top-[-70px] pr-10 right-0 z-20" data-aos="fade-up" data-aos-delay="100">
-        <button
-          onClick={prevSlide}
-          className="bg-white text-black w-10 h-10 rounded-full z-10 hover:bg-gray-700 transition"
-        >
-          &#10094;
-        </button>
-        <button
-          onClick={nextSlide}
-          className="bg-white text-black w-10 h-10 rounded-full z-10 hover:bg-gray-700 transition ml-4"
-        >
-          &#10095;
-        </button>
+    <div className="relative py-10 ">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {images.map((image, index) => (
+          <div
+            key={index}
+            className="relative bg-white text-white rounded-lg overflow-hidden shadow-lg"
+            data-aos="fade-up"
+            data-aos-delay={index * 100}
+          >
+            <div className="relative group overflow-hidden">
+              <img
+                src={image.src}
+                alt={image.title}
+                className="w-full h-[250px] object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              {image.discount && (
+                <span className="absolute top-4 left-4 bg-red-600 text-white text-xs font-bold py-1 px-3 rounded">
+                  {image.discount}
+                </span>
+              )}
+              <button
+                className="absolute bottom-4 right-4 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700"
+                onClick={() => openSlider(image.gallery)}
+              >
+                📷
+              </button>
+            </div>
+            <div className="p-6">
+              <div className="text-xl font-bold mb-2 text-black">{image.title}</div>
+              <p className="text-sm opacity-75 mb-4 text-black">{image.location}</p>
+              <p className="text-lg font-semibold text-black">{image.price}</p>
+              <div className="flex items-center justify-between mt-4">
+                <div className="flex gap-4 text-xs">
+                  <span className="flex items-center gap-1 text-black">
+                    🛏️ 3 Beds
+                  </span>
+                  <span className="flex items-center gap-1 text-black">
+                    🛁 2 Baths
+                  </span>
+                  <span className="flex items-center gap-1 text-black">
+                    👥 12 Guests
+                  </span>
+                </div>
+                <button className="bg-black text-white text-sm py-2 px-4 rounded hover:bg-blue-700">
+                  Book Now
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
-      <div className="overflow-hidden relative">
-        <div
-          className="flex transition-transform duration-700 ease-in-out"
-          style={{
-            transform: `translateX(-${currentIndex * 100}%)`,
-          }}
-        >
-          {slides.map((slide, slideIndex) => (
-            <div key={slideIndex} className="flex min-w-full flex-shrink-0">
-              {slide.map((image, index) => (
-                <div
-                  key={index}
-                  className="relative group min-w-[25%] overflow-hidden"
-                  data-aos="fade-up"
-                  data-aos-delay={index * 200}
-                >
+      {/* Slider Modal */}
+      {isSliderOpen && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex items-center justify-center">
+          <div
+            ref={sliderModalRef}
+            className="relative w-11/12 md:w-3/4 lg:w-1/2 bg-white p-4 rounded"
+          >
+            <button
+              className="absolute top-2 right-2 text-white bg-black  p-2 rounded-full z-50"
+              onClick={closeSlider}
+            >
+              ✖
+            </button>
+            <Slider {...sliderSettings} className="relative z-10">
+              {currentImages.map((image, idx) => (
+                <div key={idx}>
                   <img
-                    src={image.src}
-                    alt={`carousel-image-${slideIndex * 4 + index}`}
-                    className="w-[400px] h-[350px] object-cover shadow-xl transition-transform duration-300 group-hover:scale-110"
+                    src={image}
+                    alt={`Slide ${idx + 1}`}
+                    className="w-full h-[400px] object-cover rounded"
                   />
-                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <button className="bg-white text-black py-2 px-4 rounded hover:bg-blue-600 hover:text-white ">
-                      Book Now
-                    </button>
-                  </div>
-                  <div className="text-center mt-4">
-                    <h3 className="text-xl font-semibold text-white">{image.title}</h3>
-                    <p className="text-sm text-white opacity-80 mt-2">{image.description}</p>
-                  </div>
                 </div>
               ))}
-            </div>
-          ))}
+            </Slider>
+          </div>
         </div>
-      </div>
-      <div className="flex justify-center pt-16">
-        <button className="bg-white text-black py-4 px-4 rounded hover:bg-black hover:text-white">
-          Explore Our Properties
-        </button>
-      </div>
+      )}
     </div>
   );
 };

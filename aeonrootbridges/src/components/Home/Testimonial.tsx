@@ -54,7 +54,7 @@ const Testimonial: React.FC = () => {
   return (
     <div className="bg-black py-12">
       {/* Header Section */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-8 xs:px-6">
         <h4 className="text-sm text-gray-400 uppercase tracking-wide">Guest Reviews</h4>
         <h2 className="text-4xl font-extrabold text-white mb-4">
           What Guests Saying?

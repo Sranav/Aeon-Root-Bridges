@@ -15,7 +15,7 @@ const ServiceSection = () => {
   }, []);
 
   return (
-    <div className="px-6">
+    <div className="">
       <h2 className="text-4xl font-bold mb-12 text-white">Offer the Best Services
       to Your Stay</h2>
 

@@ -12,7 +12,7 @@ const AboutSection = () => {
 
   return (
     <section className="bg-gradient-to-r to-black py-20">
-      <div className="lg:mx-20 px-6 lg:px-16 grid gap-16 lg:grid-cols-2 items-center">
+      <div className="lg:mx-20 px-6 lg:px-16 grid gap-16 lg:grid-cols-2 items-center lg:pt-0 xs:pt-[180px]">
         {/* Text Section */}
         <div className="text-white space-y-6" data-aos="fade-up">
           <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-6" data-aos="fade-up" data-aos-delay="300">
