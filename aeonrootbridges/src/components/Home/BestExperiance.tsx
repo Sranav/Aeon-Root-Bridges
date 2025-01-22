@@ -21,7 +21,7 @@ const BestExperiance = () => {
   return (
     <div className='relative pb-10'>
       <div
-        className='absolute inset-0 bg-black opacity-50 z-0 bg-cover bg-center h-[700px] bg-fixed '
+        className='absolute inset-0 bg-black opacity-50 z-0 bg-cover bg-center lg:h-[700px] bg-fixed '
         style={{
           backgroundImage: `url(${BestExpBanner})`,
         }}
@@ -29,7 +29,7 @@ const BestExperiance = () => {
       <div className='relative pt-[70px] z-10 flex flex-col justify-center items-center h-full'>
         <div className='text-[20px] text-center'>Get best experience </div>
         <div className='text-[40px] text-center'>The Only Place you’ll find Outside the Home</div>
-        <div className='flex flex-row gap-4 justify-center pt-6'>
+        <div className='flex lg:flex-row xs:flex-col gap-4 justify-center pt-6 lg:px-0 xs:px-6'>
           <div
             data-aos="fade-up" // Add AOS data attribute for animation
             className='bg-white py-6 px-6 flex items-center'
@@ -56,7 +56,7 @@ const BestExperiance = () => {
             </div>
           </div>
         </div>
-        <div className='flex flex-row gap-4 justify-center pt-6'>
+        <div className='flex lg:flex-row xs:flex-col gap-4 justify-center pt-6 lg:px-0 xs:px-6'>
           <div
             data-aos="fade-up"
             data-aos-delay="400"
