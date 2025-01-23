@@ -3,7 +3,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 import banner1 from '@assets/images/Banner1.jpg';
-import banner2 from '@assets/images/Banner3.jpg';
+import Aeonabout from '@assets/images/Aeonabout.jpeg';
 
 const AboutSection = () => {
   useEffect(() => {
@@ -11,40 +11,73 @@ const AboutSection = () => {
   }, []);
 
   return (
-    <section className="bg-gradient-to-r to-black py-20">
-      <div className="lg:mx-20 px-6 lg:px-16 grid gap-16 lg:grid-cols-2 items-center lg:pt-0 xs:pt-[180px]">
-        {/* Text Section */}
-        <div className="text-white space-y-6" data-aos="fade-up">
-          <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-6" data-aos="fade-up" data-aos-delay="300">
-            Experience Luxury at Aeon Resort
-          </h2>
-          <p className="text-lg sm:text-xl leading-relaxed opacity-90" data-aos="fade-up" data-aos-delay="400">
-            Escape to paradise with breathtaking views, world-class amenities, and unparalleled comfort. At Aeon Resort, we offer an experience that combines the serenity of nature with the luxury of modern living.
-          </p>
-          <p className="text-lg sm:text-xl leading-relaxed opacity-90" data-aos="fade-up" data-aos-delay="500">
-            Whether you're here for a romantic getaway, family vacation, or a peaceful retreat, our rooms are designed for relaxation and your ultimate comfort. Book your stay now and immerse yourself in tranquility.
-          </p>
-          {/* Call-to-Action Button */}
-          <div className="mt-8" data-aos="fade-up" data-aos-delay="600">
-            <a href="#booking" className="inline-block bg-white text-black py-3 px-6 rounded-lg text-lg font-semibold hover:bg-black hover:text-white transition duration-300">
-              Book Your Stay
-            </a>
+    <section className="bg-black py-16 lg:py-20">
+      <div className="container mx-auto px-6 lg:px-16 grid gap-12 lg:grid-cols-2 items-center">
+        {/* Left Section (Image Collage) */}
+        <div className="space-y-6" data-aos="fade-right">
+          {/* Top Image */}
+          {/* <div className="relative overflow-hidden rounded-lg shadow-md">
+            <img
+              src={banner1}
+              alt="Luxury Villa Exterior"
+              className="w-full h-[350px] object-cover transition-transform transform hover:scale-105"
+            />
+          </div> */}
+          {/* Bottom Image */}
+          <div className="relative overflow-hidden rounded-lg shadow-md">
+            <img
+              src={Aeonabout}
+              alt="Luxury Villa Interior"
+              className="w-full h-[750px] object-cover transition-transform transform hover:scale-105"
+            />
           </div>
         </div>
 
-        {/* Image Section */}
-        <div className="flex flex-col gap-6 lg:gap-12" data-aos="fade-up" data-aos-delay="700">
-          <div 
-            className="relative rounded-lg overflow-hidden shadow-xl transition-all duration-500 hover:scale-105 hover:shadow-2xl transform" 
-            data-aos="zoom-in" 
-            data-aos-delay="800"
-          >
-            <div className="absolute inset-0 bg-gradient-to-t from-black opacity-40"></div>
-            <img className="w-full h-[600px] object-cover" src={banner1} alt="resort view 1" data-aos="fade-right" data-aos-delay="900" />
+        {/* Right Section (Text and Details) */}
+        <div className="space-y-8" data-aos="fade-up">
+          <div className="text-[40px]  text-white leading-tight">
+            Get to Know About Luxury & Comfortable Villas
           </div>
-
-          {/* Optionally, add the second image */}
-          
+          <p className="text-[20px] text-white">
+            We’re providing a great opportunity for staying in top luxury villas.
+            Lorem ipsum dolor sit amet, con adipiscing elit tiam convallis elit id
+            impedie. Quisq commodo simply free ornare tortor. If you are going to
+            use a passage.
+          </p>
+          <ul className="space-y-3 text-lg text-white">
+            <li className="flex items-center">
+              <span className="w-6 h-6 mr-3 bg-white rounded-full flex justify-center items-center text-black font-bold">
+                ✓
+              </span>
+              Guarantee happiness
+            </li>
+            <li className="flex items-center">
+              <span className="w-6 h-6 mr-3 bg-white rounded-full flex justify-center items-center text-black font-bold">
+                ✓
+              </span>
+              Search & book the best
+            </li>
+            <li className="flex items-center">
+              <span className="w-6 h-6 mr-3 bg-white rounded-full flex justify-center items-center text-black font-bold">
+                ✓
+              </span>
+              Most luxury villas available
+            </li>
+            <li className="flex items-center">
+              <span className="w-6 h-6 mr-3 bg-white rounded-full flex justify-center items-center text-black font-bold">
+                ✓
+              </span>
+              Premier choice for vacation rentals
+            </li>
+          </ul>
+          <div className="mt-6">
+            <a
+              href="#"
+              className="bg-white text-black py-3 px-8 rounded-lg text-lg font-semibold shadow-md transition duration-300"
+            >
+              Discover More
+            </a>
+          </div>
         </div>
       </div>
     </section>
