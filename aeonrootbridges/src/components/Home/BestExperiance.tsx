@@ -32,7 +32,7 @@ const BestExperiance = () => {
         <div className='flex lg:flex-row xs:flex-col gap-4 justify-center pt-6 lg:px-0 xs:px-6'>
           <div
             data-aos="fade-up" // Add AOS data attribute for animation
-            className='bg-white py-6 px-6 flex items-center'
+            className='bg-white py-6 px-6 flex items-center rounded'
           >
             <div className='mr-4'>
               <img src={villaIcon} alt="" className='w-[100px]' />
@@ -45,7 +45,7 @@ const BestExperiance = () => {
           <div
             data-aos="fade-up"
             data-aos-delay="200" // Delay animation for the second box
-            className='bg-white py-6 px-6 flex items-center'
+            className='bg-white py-6 px-6 flex items-center rounded'
           >
             <div className='mr-4'>
               <img src={TrustedIcon} alt="" className='w-[100px]' />
@@ -60,7 +60,7 @@ const BestExperiance = () => {
           <div
             data-aos="fade-up"
             data-aos-delay="400"
-            className='bg-white py-6 px-6 flex items-center'
+            className='bg-white py-6 px-6 flex items-center rounded'
           >
             <div className='mr-4'>
               <img src={UnparalledIcon} alt="" className='w-[100px]' />
@@ -73,7 +73,7 @@ const BestExperiance = () => {
           <div
             data-aos="fade-up"
             data-aos-delay="600"
-            className='bg-white py-6 px-6 flex items-center'
+            className='bg-white py-6 px-6 flex items-center rounded'
           >
             <div className='mr-4'>
               <img src={SecureIcon} alt="" className='w-[100px]' />

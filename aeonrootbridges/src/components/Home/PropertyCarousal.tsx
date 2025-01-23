@@ -96,7 +96,7 @@ const PropertyCarousal: React.FC = () => {
               <img
                 src={image.src}
                 alt={image.title}
-                className="w-full h-[250px] object-cover transition-transform duration-500 group-hover:scale-110"
+                className="w-full h-[350px] object-cover transition-transform duration-500 group-hover:scale-110"
               />
               {image.discount && (
                 <span className="absolute top-4 left-4 bg-red-600 text-white text-xs font-bold py-1 px-3 rounded">
@@ -110,23 +110,23 @@ const PropertyCarousal: React.FC = () => {
                 📷
               </button>
             </div>
-            <div className="p-6">
-              <div className="text-xl font-bold mb-2 text-black">{image.title}</div>
-              <p className="text-sm opacity-75 mb-4 text-black">{image.location}</p>
-              <p className="text-lg font-semibold text-black">{image.price}</p>
+            <div className="p-6 bg-black">
+              <div className="text-xl font-bold mb-2 text-white">{image.title}</div>
+              <p className="text-sm opacity-75 mb-4 text-white">{image.location}</p>
+              <p className="text-lg font-semibold text-white">{image.price}</p>
               <div className="flex items-center justify-between mt-4">
                 <div className="flex gap-4 text-xs">
-                  <span className="flex items-center gap-1 text-black">
+                  <span className="flex items-center gap-1 text-white">
                     🛏️ 3 Beds
                   </span>
-                  <span className="flex items-center gap-1 text-black">
+                  <span className="flex items-center gap-1 text-white">
                     🛁 2 Baths
                   </span>
-                  <span className="flex items-center gap-1 text-black">
+                  <span className="flex items-center gap-1 text-white">
                     👥 12 Guests
                   </span>
                 </div>
-                <button className="bg-black text-white text-sm py-2 px-4 rounded hover:bg-blue-700">
+                <button className="bg-white text-black text-sm py-2 px-4 rounded hover:bg-black hover:text-white">
                   Book Now
                 </button>
               </div>

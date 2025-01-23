@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Av1 from "@assets/images/av1.webp";
+import AOS from "aos";
+import "aos/dist/aos.css"; // Import AOS styles
 
 interface Testimonial {
   id: number;
@@ -51,12 +53,21 @@ const Testimonial: React.FC = () => {
     ],
   };
 
+  // Initialize AOS on component mount
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Animation duration in ms
+      easing: "ease-in-out", // Easing type
+      once: true, // Animation happens only once
+    });
+  }, []);
+
   return (
     <div className="bg-black py-12">
       {/* Header Section */}
-      <div className="text-center mb-8 xs:px-6">
+      <div className="text-center mb-8 xs:px-6" data-aos="fade-up">
         <h4 className="text-sm text-gray-400 uppercase tracking-wide">Guest Reviews</h4>
-        <h2 className="text-4xl font-extrabold text-white mb-4">
+        <h2 className="text-4xl font-extrabold text-white mb-4" data-aos="fade-up">
           What Guests Saying?
         </h2>
         {/* Star Ratings */}
@@ -70,7 +81,7 @@ const Testimonial: React.FC = () => {
             </span>
           ))}
         </div>
-        <p className="text-gray-400 text-sm">
+        <p className="text-gray-400 text-sm" data-aos="fade-up">
           Trust Score 4.5 (Based on 2,500 Reviews)
         </p>
       </div>
@@ -79,7 +90,7 @@ const Testimonial: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4">
         <Slider {...settings}>
           {testimonials.map((testimonial) => (
-            <div key={testimonial.id} className="p-4">
+            <div key={testimonial.id} className="p-4" data-aos="fade-up">
               <div className="bg-gray-800 rounded-lg shadow-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300">
                 {/* Message */}
                 <div className="p-6">

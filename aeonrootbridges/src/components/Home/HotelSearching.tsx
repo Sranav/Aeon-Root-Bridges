@@ -86,7 +86,7 @@ const HotelSearching = () => {
                             className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-[15px] p-5 text-black"
                         />
                         {showDestinationDropdown && (
-                            <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-lg mt-1 max-h-48 overflow-y-auto">
+                            <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-lg mt-1 max-h-48 overflow-y-auto z-10">
                                 {locations.map((location, index) => (
                                     <div
                                         key={index}
