@@ -117,7 +117,7 @@ const Gallery: React.FC = () => {
             <img
               src={filteredImages[currentIndex].src}
               alt={`Zoomed image ${currentIndex + 1}`}
-              className="max-w-full max-h-full rounded-lg"
+              className="w-full h-[600px] rounded-lg"
             />
             <button
               className="absolute right-4 bg-black text-white px-4 py-2 rounded shadow"

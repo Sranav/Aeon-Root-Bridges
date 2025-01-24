@@ -71,10 +71,10 @@ const BannerSlider = () => {
 
             {/* Overlay */}
             <div
-              className={`absolute inset-0 bg-black transition-opacity duration-700 ease-in-out ${
-                isAnimating ? 'opacity-50' : 'opacity-0'
-              }`}
-            />
+  className={`absolute inset-0 bg-black transition-transform duration-700 ease-in-out opacity-30 ${
+    isAnimating ? 'transform scale-x-100' : 'transform scale-x-0'
+  } `}
+/>
           </div>
         ))}
       </div>

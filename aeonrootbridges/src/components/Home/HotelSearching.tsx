@@ -68,10 +68,13 @@ const HotelSearching = () => {
             setShowGuestsDropdown(false);
         }, 200);
     };
+    const handleButtonMouseDown = (e) => {
+        e.preventDefault(); // Prevent blur event from triggering when button is clicked
+    };
 
     return (
         <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-11/12 max-w-5xl bg-white shadow-lg rounded-xl p-4">
+            <div className="w-11/12 max-w-6xl bg-white shadow-lg rounded-xl p-4">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     {/* Destination */}
                     <div className="flex flex-col relative">
@@ -82,7 +85,7 @@ const HotelSearching = () => {
                             onChange={handleDestinationChange}
                             onFocus={handleDestinationFocus}
                             onBlur={handleDestinationBlur}
-                            placeholder="Search Property"
+                            placeholder="Select Property"
                             className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-[15px] p-5 text-black"
                         />
                         {showDestinationDropdown && (
@@ -111,7 +114,7 @@ const HotelSearching = () => {
                             selectsRange
                             monthsShown={2}
                             dateFormat="MMM d, yyyy"
-                            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-[15px] p-5 text-black"
+                            className="mt-1 block w-full  rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-[16px] p-5 text-black"
                             placeholderText="Select Dates"
                             minDate={new Date()}
                         />
@@ -133,20 +136,22 @@ const HotelSearching = () => {
                             <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-lg mt-1 max-h-48">
                                 {/* Guest Options */}
                                 <div className="flex justify-between px-4 py-2">
-                                    <div className="flex flex-col gap-14">
-                                        <div className="flex items-center justify-between">
+                                    <div className="flex flex-col gap-6">
+                                        <div className="flex items-center justify-between lg:gap-24 xs:gap-40">
                                             <span className="text-black">Adults</span>
                                             <div className="flex items-center space-x-2">
                                                 <button
-                                                    className="px-2 py-1 text-xl border rounded-full"
+                                                    className="w-8 h-8 flex items-center justify-center text-[26px] border rounded-full text-black"
                                                     onClick={() => handleGuestChange('adults', 'decrement')}
+                                                    onMouseDown={handleButtonMouseDown} // Prevent blur
                                                 >
                                                     -
                                                 </button>
                                                 <span className="text-black">{formData.guests.adults}</span>
                                                 <button
-                                                    className="px-2 py-1 text-xl border rounded-full"
+                                                    className="w-8 h-8 flex items-center justify-center text-[26px] border rounded-full text-black"
                                                     onClick={() => handleGuestChange('adults', 'increment')}
+                                                    onMouseDown={handleButtonMouseDown} // Prevent blur
                                                 >
                                                     +
                                                 </button>
@@ -156,15 +161,17 @@ const HotelSearching = () => {
                                             <span className="text-black">Children</span>
                                             <div className="flex items-center space-x-2">
                                                 <button
-                                                    className="px-2 py-1 text-xl border rounded-full"
+                                                    className="w-8 h-8 flex items-center justify-center text-[26px] border rounded-full text-black"
                                                     onClick={() => handleGuestChange('children', 'decrement')}
+                                                    onMouseDown={handleButtonMouseDown} // Prevent blur
                                                 >
                                                     -
                                                 </button>
                                                 <span className="text-black">{formData.guests.children}</span>
                                                 <button
-                                                    className="px-2 py-1 text-xl border rounded-full text-black"
+                                                    className="w-8 h-8 flex items-center justify-center text-[26px] border rounded-full text-black"
                                                     onClick={() => handleGuestChange('children', 'increment')}
+                                                    onMouseDown={handleButtonMouseDown} // Prevent blur
                                                 >
                                                     +
                                                 </button>

@@ -27,7 +27,7 @@ const Home = () => {
         </div>
         <PropertyCarousal />
       </div>
-      <div className='lg:mx-20 pb-10 pt-14 xs:px-6 lg:px-0'>
+      <div className='lg:mx-20 pb-24 pt-14 xs:px-6 lg:px-0'>
         <ServiceSection />
       </div>
       <div className='lg:mx-20 pb-10 pt-14'>
