@@ -17,3 +17,10 @@
     background-color: #fff;
     border-bottom: none !important;
   }
+  
+  @media screen and (max-width: 1024px){
+    .react-datepicker{
+      flex-direction: column;
+      width: 330px;
+    }
+  }

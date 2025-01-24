@@ -11,7 +11,7 @@ const HomeContactFrom = () => {
 
   return (
     <div>
-        <div className="overflow-hidden shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-3xl max-w-8xl mx-auto bg-white m-4 font-[sans-serif]">
+        <div className="overflow-hidden shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-3xl max-w-8xl mx-auto bg-black m-4 font-[sans-serif]">
       <div
         className="grid md:grid-cols-2 items-center">
         <div className="p-8 bg-gray-900" data-aos="fade-up">

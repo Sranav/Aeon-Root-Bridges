@@ -45,7 +45,7 @@ const NavBar = () => {
         <button
           onClick={toggleMenu}
           type="button"
-          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-400 rounded-lg md:hidden hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
+          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
           aria-controls="navbar-default"
           aria-expanded={isMenuOpen}
         >
@@ -69,8 +69,8 @@ const NavBar = () => {
 
         {/* Fullscreen Menu (Overlay for small screens) */}
         <div
-          className={`fixed inset-0 bg-black bg-opacity-95 z-50 flex flex-col justify-center items-center transition-all duration-300 ${
-            isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          className={`fixed inset-0 bg-black bg-opacity-95 z-50 flex flex-col justify-center items-center transition-all duration-700 ${
+            isMenuOpen ? "opacity-100 visible translate-x-0" : "opacity-0 invisible translate-x-full"
           }`}
         >
           <button
@@ -114,7 +114,7 @@ const NavBar = () => {
                 className="block py-2 px-3 hover:text-gray-400"
                 onClick={closeMenu}
               >
-                Pricing
+                Gallary
               </a>
             </li>
             <li>
@@ -162,7 +162,7 @@ const NavBar = () => {
                 href="#"
                 className="block py-2 px-3 text-white hover:text-gray-400"
               >
-                Pricing
+                Gallary
               </a>
             </li>
             <li>

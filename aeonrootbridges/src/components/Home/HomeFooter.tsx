@@ -37,7 +37,7 @@ const HomeFooter = () => {
             <a
               href="/"
               rel="noopener noreferrer"
-              target="_blank"
+              target=""
               className="text-white"
             >
               <span className="sr-only">Facebook</span>
@@ -60,7 +60,7 @@ const HomeFooter = () => {
             <a
               href="/"
               rel="noopener noreferrer"
-              target="_blank"
+              target=""
               className="text-white "
             >
               <span className="sr-only">Instagram</span>
@@ -83,7 +83,7 @@ const HomeFooter = () => {
             <a
               href="/"
               rel="noopener noreferrer"
-              target="_blank"
+              target=""
               className="text-white"
             >
               <span className="sr-only">Twitter</span>
@@ -104,7 +104,7 @@ const HomeFooter = () => {
             <a
               href="/"
               rel="noopener noreferrer"
-              target="_blank"
+              target=""
               className="text-white"
             >
               <span className="sr-only">GitHub</span>
@@ -125,9 +125,9 @@ const HomeFooter = () => {
 
           <li>
             <a
-              href="/"
+              href="#"
               rel="noopener noreferrer"
-              target="_blank"
+              target=""
               className="text-white"
             >
               <span className="sr-only">Dribbble</span>
