@@ -7,6 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 import banner1 from "@assets/images/Banner1.jpg";
 import banner2 from "@assets/images/Banner3.jpg";
+import { Link } from "react-router-dom";
 
 const PropertyCarousal: React.FC = () => {
   const [isSliderOpen, setIsSliderOpen] = useState(false);
@@ -153,7 +154,7 @@ const PropertyCarousal: React.FC = () => {
                   </span>
                 </div>
                 <button className="bg-white text-black text-sm py-2 px-4 rounded hover:bg-black hover:text-white">
-                  Book Now
+                 <Link to="/villabooking">Book Now</Link> 
                 </button>
               </div>
             </div>

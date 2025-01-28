@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AeonLogo from "@assets/images/aeonlogo1.png";
+import { Link } from 'react-router-dom';
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -133,21 +134,21 @@ const NavBar = () => {
         <div className="hidden md:flex w-full md:w-auto">
           <ul className="font-medium flex flex-row space-x-8 text-white">
             <li>
-              <a
-                href="#"
+              <Link
+                to="/"
                 className="block py-2 px-3 text-white hover:text-gray-400"
                 aria-current="page"
               >
                 Home
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#"
+              <Link
+                to="/villabooking"
                 className="block py-2 px-3 text-white hover:text-gray-400"
               >
                 About
-              </a>
+              </Link>
             </li>
             <li>
               <a
