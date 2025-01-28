@@ -30,7 +30,7 @@ const Home = () => {
       <div className='lg:mx-20 pb-24 pt-14 xs:px-6 lg:px-0'>
         <ServiceSection />
       </div>
-      <div className='lg:mx-20 pb-10 pt-14'>
+      <div className=' pb-10 pt-14'>
 
         <BestExperiance />
       </div>
