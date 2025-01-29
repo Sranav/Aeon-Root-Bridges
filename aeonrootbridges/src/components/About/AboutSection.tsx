@@ -38,13 +38,13 @@ const AboutSection = () => {
           <div className="text-[40px]  text-white leading-tight">
             Get to Know About Luxury & Comfortable Villas
           </div>
-          <p className="text-[20px] text-white">
+          <p className="text-[20px] text-white font-playfair">
             We’re providing a great opportunity for staying in top luxury villas.
             Lorem ipsum dolor sit amet, con adipiscing elit tiam convallis elit id
             impedie. Quisq commodo simply free ornare tortor. If you are going to
             use a passage.
           </p>
-          <ul className="space-y-3 text-lg text-white">
+          <ul className="space-y-3 text-lg text-white font-playfair">
             <li className="flex items-center">
               <span className="w-6 h-6 mr-3 bg-white rounded-full flex justify-center items-center text-black font-bold">
                 ✓

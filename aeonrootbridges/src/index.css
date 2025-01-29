@@ -1,6 +1,7 @@
 @import 'react-datepicker/dist/react-datepicker.css';
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 
-
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
 
 
 :root {
@@ -23,7 +24,7 @@
 
 body,
 html {
-  @apply font-degular;
+  @apply font-khula;
   @apply bg-body-bg;
   @apply text-body-text;
   position: relative;

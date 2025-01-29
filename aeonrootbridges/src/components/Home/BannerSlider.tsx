@@ -88,15 +88,15 @@ const BannerSlider = () => {
         <h1 className="text-4xl md:text-5xl font-bold mb-2 ">
           Welcome to Your Dream Vacation
         </h1>
-        <p className="text-lg md:text-xl font-light">
+        <p className="text-lg md:text-xl font-light font-playfair">
           Discover the best hotels and experiences curated just for you
         </p>
       </div>
 
       {/* HotelSearching Component */}
-      <div className="absolute inset-x-0 ">
+      {/* <div className="absolute inset-x-0 ">
         <HotelSearching />
-      </div>
+      </div> */}
 
       {/* Controls */}
       <button
