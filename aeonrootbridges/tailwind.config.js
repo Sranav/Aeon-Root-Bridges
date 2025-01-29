@@ -8,8 +8,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        tahoma: ['Tahoma', 'sans-serif'], // Adding Tahoma to the font family list
-        degular: ['degular-display', 'sans-serif'],
+        playfair: ['Playfair Display', 'serif'], // Adding Tahoma to the font family list
+        khula: ["Cinzel", 'serif'],
       },
       
       colors: {
