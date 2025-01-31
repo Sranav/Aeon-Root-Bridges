@@ -50,7 +50,7 @@ const BannerSlider = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-[800px]">
+    <div className="relative w-full h-[900px]">
       {/* NavBar with transparency control */}
       <NavBar transparent={isTransparent} />
 

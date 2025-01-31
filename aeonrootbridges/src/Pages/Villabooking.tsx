@@ -17,7 +17,7 @@ const Villabooking = () => {
       <div className='lg:mx-20 pb-10'>
         <VilaBooking/>
       </div>
-      <div className='lg:mx-20 pt-5 pb-10'>
+      <div className='lg:mx-20 pt-20 pb-10'>
         <HotelDetails/>
       </div>
     </div>

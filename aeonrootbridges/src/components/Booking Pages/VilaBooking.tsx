@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 import booking1 from "@assets/images/booking/booking-1.jpg";
 import booking2 from "@assets/images/booking/booking-2.jpg";
 import booking3 from "@assets/images/booking/booking-3.jpg";
@@ -6,24 +8,44 @@ import booking4 from "@assets/images/booking/booking-4.jpg";
 import booking5 from "@assets/images/booking/booking-5.jpg";
 import booking6 from "@assets/images/booking/booking-6.jpg";
 
+
+const Modal = ({ isOpen, onClose, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3">
+        <button onClick={onClose} className="absolute top-4 right-4 text-black">
+          &times;
+        </button>
+        {children}
+      </div>
+    </div>
+  );
+};
+
 const VilaBooking = () => {
   const images = [booking1, booking2, booking3, booking4, booking5, booking6];
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // State for booking
-  const [villaRooms, setVillaRooms] = useState(1);
-  const [hutRooms, setHutRooms] = useState(1);
+  const [villaRooms, setVillaRooms] = useState(0);
+  const [hutRooms, setHutRooms] = useState(0);
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [bookFullVilla, setBookFullVilla] = useState(false);
   const [bookFullHut, setBookFullHut] = useState(false);
-  const [checkInDate, setCheckInDate] = useState("");
-  const [checkOutDate, setCheckOutDate] = useState("");
+  const [startDate, setstartDate] = useState("");
+  const [endDate, setendDate] = useState("");
   const [accommodationType, setAccommodationType] = useState("villa");
   const [page, setPage] = useState(1);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [guestWarning, setGuestWarning] = useState("");
+  const [message, setMessage] = useState("");
+  const [totalNights, setTotalNights] = useState(0);
+  const [totalCost, setTotalCost] = useState(0);
 
   // Constants
   const maxGuestsPerRoom = 3;
@@ -35,63 +57,163 @@ const VilaBooking = () => {
   const totalGuests = adults + children;
   const today = new Date().toISOString().split("T")[0];
 
-  // Update room count when guest count changes
+  const navigate = useNavigate();
+
+  // Load Razorpay script
   useEffect(() => {
-    if (totalGuests > maxVillaCapacity) {
-      setBookFullVilla(true);
-    } else {
-      setBookFullVilla(false);
-      const requiredVillaRooms = Math.ceil(totalGuests / maxGuestsPerRoom);
-      setVillaRooms(Math.min(requiredVillaRooms, maxRoomsInVilla));
-    }
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => console.log("Razorpay script loaded.");
+    script.onerror = (e) => console.error("Error loading Razorpay script:", e);
+    document.body.appendChild(script);
 
-    if (totalGuests > maxHutCapacity) {
-      setBookFullHut(true);
-    } else {
-      setBookFullHut(false);
-      const requiredHutRooms = Math.ceil(totalGuests / maxGuestsPerRoom);
-      setHutRooms(Math.min(requiredHutRooms, maxRoomsInHut));
-    }
-  }, [totalGuests]);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
-  // Handle guest input with validation
-  const handleGuestInput = (e, type) => {
-    const value = parseInt(e.target.value) || 0;
-    const newTotalGuests = type === "adults" ? value + children : adults + value;
+  // Fetch total cost and nights from the backend
+  const fetchTotalCostAndNights = async () => {
+    if (!startDate || !endDate) return;
 
-    const maxAllowedGuests = (villaRooms + hutRooms) * maxGuestsPerRoom;
+    try {
+      const response = await axios.post("https://express-backend-latest.onrender.com/book", {
+        accommodationType,
+        startDate,
+        endDate,
+        villaRooms,
+        hutRooms,
+        adults,
+        children,
+      });
 
-    if (newTotalGuests > maxAllowedGuests) {
-      setGuestWarning(`Maximum guests for selected rooms is ${maxAllowedGuests}. Adding more rooms...`);
-      const requiredRooms = Math.ceil(newTotalGuests / maxGuestsPerRoom);
-      if (accommodationType === "villa") {
-        setVillaRooms(Math.min(requiredRooms, maxRoomsInVilla));
-      } else if (accommodationType === "hut") {
-        setHutRooms(Math.min(requiredRooms, maxRoomsInHut));
-      } else if (accommodationType === "both") {
-        const requiredVillaRooms = Math.ceil(newTotalGuests / maxGuestsPerRoom);
-        const requiredHutRooms = Math.ceil(newTotalGuests / maxGuestsPerRoom);
-        setVillaRooms(Math.min(requiredVillaRooms, maxRoomsInVilla));
-        setHutRooms(Math.min(requiredHutRooms, maxRoomsInHut));
+      if (response.status === 200) {
+        const { totalCost, totalNights } = response.data;
+        setTotalCost(totalCost); // Update total cost
+        setTotalNights(totalNights); // Update total nights
       }
-    } else {
-      setGuestWarning("");
-    }
-
-    if (type === "adults") {
-      setAdults(value);
-    } else {
-      setChildren(value);
+    } catch (error) {
+      console.error("Error fetching total cost and nights:", error);
+      setMessage("Error calculating cost and nights.");
     }
   };
 
-  // Handle room change
-  const handleRoomChange = (e, type) => {
-    const newRooms = parseInt(e.target.value) || 1;
-    if (type === "villa") {
-      setVillaRooms(newRooms);
-    } else {
-      setHutRooms(newRooms);
+  useEffect(() => {
+    fetchTotalCostAndNights();
+  }, [startDate, endDate, villaRooms, hutRooms, adults, children, accommodationType]);
+
+  // Handle search (submit)
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    setIsModalOpen(true); // Open the modal
+  };
+
+  // Handle Razorpay payment
+  const handlePayment = async () => {
+    if (typeof window.Razorpay === "undefined") {
+      console.error("Razorpay is not loaded properly.");
+      setMessage("Error loading Razorpay.");
+      return;
+    }
+
+    try {
+      const response = await axios.post("https://express-backend-latest.onrender.com/book", {
+        accommodationType,
+        startDate,
+        endDate,
+        villaRooms,
+        hutRooms,
+        adults,
+        children,
+      });
+
+      if (response.status === 200) {
+        const { totalNights: nights, totalCost: cost } = response.data;
+        setTotalNights(nights);
+        setTotalCost(cost);
+
+        // Create Razorpay order for payment
+        const orderResponse = await axios.post("https://express-backend-latest.onrender.com/create-order", {
+          amount: cost,
+          currency: "INR",
+        });
+
+        const razorpayOrder = orderResponse.data;
+
+        const options = {
+          key: "rzp_test_c91Uj3VDXtW4Nc", // Your Razorpay test key
+          amount: razorpayOrder.amount,
+          currency: razorpayOrder.currency,
+          name: "Booking Payment",
+          description: "Villa Booking Payment",
+          image: "https://example.com/logo.png",
+          order_id: razorpayOrder.id,
+          handler: async function (response) {
+            const paymentData = {
+              razorpay_order_id: razorpayOrder.id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              accommodationType,
+              startDate,
+              endDate,
+              userDetails: {
+                name,
+                email,
+                phone,
+              },
+              totalAmount: cost,
+              rooms: accommodationType === "villa" ? villaRooms : hutRooms,
+              adults,
+              children,
+              villaRooms,
+              hutRooms,
+            };
+
+            try {
+              const verifyPaymentResponse = await axios.post(
+                "https://express-backend-latest.onrender.com/verify-payment",
+                paymentData
+              );
+              setMessage(verifyPaymentResponse.data.message);
+
+              if (verifyPaymentResponse.data.success) {
+                const saveBookingResponse = await axios.post("https://express-backend-latest.onrender.com/save-booking", {
+                  accommodationType,
+                  startDate,
+                  endDate,
+                  rooms: accommodationType === "villa" ? villaRooms : hutRooms,
+                  adults,
+                  children,
+                  totalCost: cost,
+                  userDetails: paymentData.userDetails,
+                  totalNights: nights,
+                });
+
+                if (saveBookingResponse.status === 200) {
+                  navigate("/"); // Redirect to home page after successful booking
+                }
+              }
+            } catch (error) {
+              console.error("Error verifying payment:", error);
+              setMessage("Payment verification failed!");
+            }
+          },
+          prefill: {
+            name,
+            email,
+            phone,
+          },
+          theme: {
+            color: "#F37254", // Set theme color
+          },
+        };
+
+        const razorpay = new window.Razorpay(options);
+        razorpay.open();
+      }
+    } catch (error) {
+      console.error("Error during booking:", error);
+      setMessage(error.response?.data?.message || "An error occurred.");
     }
   };
 
@@ -106,15 +228,6 @@ const VilaBooking = () => {
 
   // Handle next/prev page
   const handleNextPage = () => {
-    console.log("Accommodation Type:", accommodationType);
-    console.log("Check-in Date:", checkInDate);
-    console.log("Check-out Date:", checkOutDate);
-    console.log("Villa Rooms:", villaRooms);
-    console.log("Hut Rooms:", hutRooms);
-    console.log("Adults:", adults);
-    console.log("Children:", children);
-    console.log("Total Nights:", calculateNights());
-    console.log("Total Cost:", calculateTotalCost());
     setPage(2);
   };
 
@@ -122,45 +235,15 @@ const VilaBooking = () => {
     setPage(1);
   };
 
-  // Handle search (submit)
-  const handleSearch = (e) => {
-    e.preventDefault();
-    alert(bookFullVilla ? "Booking Full Villa!" : bookFullHut ? "Booking Full Hut!" : "Booking Successful!");
-    console.log("Full Name:", name);
-    console.log("Email:", email);
-    console.log("Accommodation Type:", accommodationType);
-    console.log("Check-in Date:", checkInDate);
-    console.log("Check-out Date:", checkOutDate);
-    console.log("Villa Rooms:", villaRooms);
-    console.log("Hut Rooms:", hutRooms);
-    console.log("Adults:", adults);
-    console.log("Children:", children);
-    console.log("Total Nights:", calculateNights());
-    console.log("Total Cost:", calculateTotalCost());
+  // Handle Full Villa/Hut checkbox change
+  const handleFullVillaChange = (e) => {
+    setBookFullVilla(e.target.checked);
+    setVillaRooms(e.target.checked ? 0 : 1);
   };
 
-  // Calculate total nights
-  const calculateNights = () => {
-    if (!checkInDate || !checkOutDate) return 0;
-    const start = new Date(checkInDate);
-    const end = new Date(checkOutDate);
-    return Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-  };
-
-  // Calculate total cost
-  const calculateTotalCost = () => {
-    const nights = calculateNights();
-    if (accommodationType === "villa") {
-      return bookFullVilla ? nights * 5000 : nights * 2000 * villaRooms;
-    } else if (accommodationType === "hut") {
-      return bookFullHut ? nights * 3000 : nights * 1500 * hutRooms;
-    } else if (accommodationType === "both") {
-      return (
-        (bookFullVilla ? nights * 5000 : nights * 2000 * villaRooms) +
-        (bookFullHut ? nights * 3000 : nights * 1500 * hutRooms)
-      );
-    }
-    return 0;
+  const handleFullHutChange = (e) => {
+    setBookFullHut(e.target.checked);
+    setHutRooms(e.target.checked ? 0 : 1);
   };
 
   return (
@@ -182,6 +265,20 @@ const VilaBooking = () => {
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>
         </button>
+        {/* Thumbnails */}
+  <div className="flex mt-4 gap-2 justify-center">
+    {images.map((img, index) => (
+      <img
+        key={index}
+        src={img}
+        alt={`Thumbnail ${index + 1}`}
+        className={`w-16 h-16 object-cover cursor-pointer border-2 ${
+          currentIndex === index ? "border-white" : "border-transparent"
+        }`}
+        onClick={() => setCurrentIndex(index)}
+      />
+    ))}
+  </div>
       </div>
 
       {/* Right Section - Booking Form */}
@@ -208,8 +305,8 @@ const VilaBooking = () => {
               <input
                 type="date"
                 min={today}
-                value={checkInDate}
-                onChange={(e) => setCheckInDate(e.target.value)}
+                value={startDate}
+                onChange={(e) => setstartDate(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg p-2 text-black"
                 required
               />
@@ -219,8 +316,8 @@ const VilaBooking = () => {
               <input
                 type="date"
                 min={today}
-                value={checkOutDate}
-                onChange={(e) => setCheckOutDate(e.target.value)}
+                value={endDate}
+                onChange={(e) => setendDate(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg p-2 text-black"
                 required
               />
@@ -232,10 +329,10 @@ const VilaBooking = () => {
                 <label className="block text-sm font-medium mb-1 text-black">Villa Rooms</label>
                 <input
                   type="number"
-                  min="1"
+                  min="0"
                   max={maxRoomsInVilla}
                   value={villaRooms}
-                  onChange={(e) => handleRoomChange(e, "villa")}
+                  onChange={(e) => setVillaRooms(Number(e.target.value))}
                   className="w-full border border-gray-300 rounded-lg p-2 text-black"
                 />
                 <p className="text-xs text-red-900 mt-1">Each room can accommodate up to 3 guests.</p>
@@ -247,9 +344,9 @@ const VilaBooking = () => {
                 <label className="block text-sm font-medium mb-1 text-black">Hut Rooms</label>
                 <input
                   type="number"
-                  min="1"
+                  min="0"
                   value={hutRooms}
-                  onChange={(e) => handleRoomChange(e, "hut")}
+                  onChange={(e) => setHutRooms(Number(e.target.value))}
                   className="w-full border border-gray-300 rounded-lg p-2 text-black"
                 />
                 <p className="text-xs text-red-900 mt-1">Each room can accommodate up to 3 guests.</p>
@@ -265,7 +362,7 @@ const VilaBooking = () => {
                   min="1"
                   max="8"
                   value={adults}
-                  onChange={(e) => handleGuestInput(e, "adults")}
+                  onChange={(e) => setAdults(Number(e.target.value))}
                   className="w-full border border-gray-300 rounded-lg p-2 text-black"
                 />
               </div>
@@ -276,7 +373,7 @@ const VilaBooking = () => {
                   min="0"
                   max="8"
                   value={children}
-                  onChange={(e) => handleGuestInput(e, "children")}
+                  onChange={(e) => setChildren(Number(e.target.value))}
                   className="w-full border border-gray-300 rounded-lg p-2 text-black"
                 />
               </div>
@@ -291,7 +388,7 @@ const VilaBooking = () => {
                 <input
                   type="checkbox"
                   checked={bookFullVilla}
-                  onChange={(e) => setBookFullVilla(e.target.checked)}
+                  onChange={handleFullVillaChange} // Use the new handler
                   className="h-5 w-5"
                 />
                 <label className="text-sm text-black">Book Full Villa (2 Rooms)</label>
@@ -302,7 +399,7 @@ const VilaBooking = () => {
                 <input
                   type="checkbox"
                   checked={bookFullHut}
-                  onChange={(e) => setBookFullHut(e.target.checked)}
+                  onChange={handleFullHutChange}
                   className="h-5 w-5"
                 />
                 <label className="text-sm text-black">Book Full Hut (2 Rooms)</label>
@@ -310,8 +407,8 @@ const VilaBooking = () => {
             )}
 
             {/* Cost & Submit */}
-            <p className="text-lg font-bold text-black">Total Cost: INR {calculateTotalCost()}</p>
-            <p className="text-lg font-bold text-black">Total Nights: {calculateNights()}</p>
+            <p className="text-lg font-bold text-black">Total Cost: INR {totalCost}</p>
+            <p className="text-lg font-bold text-black">Total Nights: {totalNights}</p>
 
             <div className="bg-black">
               <button
@@ -353,8 +450,8 @@ const VilaBooking = () => {
               <label className="block text-sm font-medium mb-1 text-black">Phone Number</label>
               <input
                 type="number"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg p-2 text-black"
                 required
               />
@@ -370,17 +467,29 @@ const VilaBooking = () => {
                 Previous
               </button>
               <div className="bg-black w-full">
-              <button
-                type="submit"
-                className="bg-black text-white px-6 py-2 rounded-lg w-full"
-              >
-                Submit
-              </button>
+                <button
+                  type="submit"
+                  className="bg-black text-white px-6 py-2 rounded-lg w-full"
+                >
+                  Pay now
+                </button>
               </div>
             </div>
           </form>
         )}
       </div>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} >
+        <div className="flex flex-col justify-center">
+          <h2 className="text-xl font-bold mb-4 text-black text-center">Complete Your Payment</h2>
+          <div className="text-black">Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt quia beatae explicabo voluptate dicta laudantium odit, consectetur id velit eveniet magnam obcaecati nemo culpa architecto, vel distinctio at quis. Voluptatem!</div>
+          <button
+            onClick={handlePayment}
+            className="bg-green-500 text-white px-6 py-2 rounded-lg mt-6"
+          >
+            Proceed to Pay
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
