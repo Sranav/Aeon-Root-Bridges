@@ -16,7 +16,7 @@ const HotelDetails = () => {
               heritage, deluxe accommodations, superb amenities, genuine hospitality, and dedicated
               service for an elevated experience in the Rocky Mountains.
             </div>
-            <div className='flex flex-row gap-[140px] pt-10'>
+            <div className='flex lg:flex-row xs:flex-col lg:gap-[140px] pt-10'>
               <div>
                 <div className='text-[20px] text-black font-semibold pt-6'>SPECIAL ROOM</div>
                 <ul className='text-black font-playfair list-disc pl-10'>
@@ -41,8 +41,8 @@ const HotelDetails = () => {
       case 'Amenities':
         return (
           <div>
-            <h3 className="text-2xl font-bold">Amenities</h3>
-            <ul className="mt-2 text-gray-600 space-y-2">
+            <h3 className="text-2xl font-bold text-black">Amenities</h3>
+            <ul className="mt-2 text-black space-y-2">
               <li>• Complimentary Wi-Fi</li>
               <li>• 24/7 room service</li>
               <li>• Swimming pool and gym</li>
@@ -53,8 +53,8 @@ const HotelDetails = () => {
       case 'Package':
         return (
           <div>
-            <h3 className="text-2xl font-bold">Package</h3>
-            <p className="mt-2 text-gray-600">
+            <h3 className="text-2xl font-bold text-black">Package</h3>
+            <p className="mt-2 text-black">
               Choose from a variety of vacation packages that suit your needs, including family
               retreats, romantic getaways, and adventure-filled stays.
             </p>
@@ -63,8 +63,8 @@ const HotelDetails = () => {
       case 'Rates':
         return (
           <div>
-            <h3 className="text-2xl font-bold">Rates</h3>
-            <p className="mt-2 text-gray-600">
+            <h3 className="text-2xl font-bold text-black">Rates</h3>
+            <p className="mt-2 text-black">
               Starting at $299 per night. Seasonal discounts and promotional offers are available.
             </p>
           </div>
@@ -72,8 +72,8 @@ const HotelDetails = () => {
       case 'Calendar':
         return (
           <div>
-            <h3 className="text-2xl font-bold">Calendar</h3>
-            <p className="mt-2 text-gray-600">Check availability and plan your stay using our interactive calendar.</p>
+            <h3 className="text-2xl font-bold text-black">Calendar</h3>
+            <p className="mt-2 text-black">Check availability and plan your stay using our interactive calendar.</p>
           </div>
         );
       default:

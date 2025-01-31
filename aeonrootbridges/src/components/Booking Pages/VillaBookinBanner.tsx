@@ -49,7 +49,7 @@ const VillaBookinBanner = () => {
             </div>
             <div className="flex items-center justify-center gap-2">
               <div className="w-6 h-6 bg-primary-400 rounded-full flex items-center justify-center">
-                <span className="text-sm font-bold text-gray-800">24/7</span>
+                <span className="text-sm font-bold text-white">24/7</span>
               </div>
               <span className="font-medium">Support</span>
             </div>

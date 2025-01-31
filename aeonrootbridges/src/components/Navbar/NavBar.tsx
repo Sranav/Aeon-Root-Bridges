@@ -26,9 +26,8 @@ const NavBar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full z-20 transition-colors duration-300 ${
-        isScrolled ? "bg-black shadow-md" : "bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 w-full z-20 transition-colors duration-300 ${isScrolled ? "bg-black shadow-md" : "bg-transparent"
+        }`}
     >
       <div className="lg:mx-20 flex flex-wrap items-center justify-between p-4">
         {/* Logo Section */}
@@ -70,9 +69,8 @@ const NavBar = () => {
 
         {/* Fullscreen Menu (Overlay for small screens) */}
         <div
-          className={`fixed inset-0 bg-black bg-opacity-95 z-50 flex flex-col justify-center items-center transition-all duration-700 ${
-            isMenuOpen ? "opacity-100 visible translate-x-0" : "opacity-0 invisible translate-x-full"
-          }`}
+          className={`fixed inset-0 bg-black bg-opacity-95 z-50 flex flex-col justify-center items-center transition-all duration-700 ${isMenuOpen ? "opacity-100 visible translate-x-0" : "opacity-0 invisible translate-x-full"
+            }`}
         >
           <button
             onClick={closeMenu}
@@ -83,13 +81,13 @@ const NavBar = () => {
           </button>
           <ul className="font-medium flex flex-col space-y-6 text-white text-2xl">
             <li>
-              <a
-                href="#"
-                className="block py-2 px-3 hover:text-gray-400"
-                onClick={closeMenu}
+            <Link
+                to="/"
+                className="block py-2 px-3 text-white hover:text-gray-400"
+                aria-current="page"
               >
                 Home
-              </a>
+              </Link>
             </li>
             <li>
               <a
@@ -126,6 +124,13 @@ const NavBar = () => {
               >
                 Contact
               </a>
+            </li>
+            <li>
+            <li className='text-center'>
+               <button className="bg-white text-black text-sm py-2 px-4 rounded hover:bg-black hover:text-white" onClick={closeMenu}>
+                               <Link to="/villabooking">Book Now</Link> 
+                              </button>
+            </li>
             </li>
           </ul>
         </div>
@@ -173,6 +178,11 @@ const NavBar = () => {
               >
                 Contact
               </a>
+            </li>
+            <li>
+              <button className="bg-white text-black text-sm py-2 px-4 rounded hover:bg-black hover:text-white">
+                <Link to="/villabooking">Book Now</Link>
+              </button>
             </li>
           </ul>
         </div>
