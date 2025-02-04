@@ -36,7 +36,7 @@ const NavBar = () => {
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
           <img src={AeonLogo} className="h-16" alt="Aeon Logo" />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">
+          <span className="self-center lg:text-2xl xs:text-[20px] font-semibold whitespace-nowrap text-white">
             Aeon Root Bridges
           </span>
         </a>
