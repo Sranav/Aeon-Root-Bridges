@@ -8,7 +8,9 @@ import booking5 from "@assets/images/booking/booking-5.jpg";
 import booking6 from "@assets/images/booking/booking-6.jpg";
 
 const VilaBooking = () => {
-  const images = [booking1, booking2, booking3, booking4, booking5, booking6];
+  const roomImages = [booking1, booking2, booking3]; // Room images
+  const villaImages = [booking4, booking5, booking6]; // Villa images
+  const hutImages = [booking3, booking4]; // Hut images (if different)
   const [currentIndex, setCurrentIndex] = useState(0);
   const [roomSelection, setRoomSelection] = useState({
     rooms: 0,
@@ -27,6 +29,8 @@ const VilaBooking = () => {
   const [totalNights, setTotalNights] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [showVillaModal, setShowVillaModal] = useState(false); // New state for the modal
+  const [isVillaConfirmed, setIsVillaConfirmed] = useState(false); // For confirming villa selection
 
   // Constants
   const maxGuestsPerRoom = 3;
@@ -57,6 +61,17 @@ const VilaBooking = () => {
 
     return totalRoomCost + totalVillaCost + totalHutCost;
   };
+
+  const [divHeight, setDivHeight] = useState('600px');
+
+  useEffect(() => {
+    // Adjust the height based on whether dates are selected
+    if (startDate && endDate) {
+      setDivHeight('auto'); // Increase height when dates are selected
+    } else {
+      setDivHeight('600px'); // Default height
+    }
+  }, [startDate, endDate]); // Run the effect whenever startDate or endDate change
 
   // Handle date change
   useEffect(() => {
@@ -113,70 +128,95 @@ const VilaBooking = () => {
     setPage(1);
   };
 
-  
-  // Logic for changing room selection and displaying the message
-const handleRoomChange = (e) => {
-  const value = Number(e.target.value);
+  // Handle room change logic
+  const handleRoomChange = (e) => {
+    const value = Number(e.target.value);
 
-  // If more than 1 room is selected, automatically set villa to 1 and hide the message
-  if (value > 1) {
-    setRoomSelection((prevState) => ({
-      ...prevState,
-      rooms: 0, // Reset rooms to 0 when switching to villa
-      villa: 1, // Automatically set villa to 1
-    }));
-    setMessage(""); // Hide the message
-  } else {
-    setRoomSelection((prevState) => ({
-      ...prevState,
-      rooms: value,
-    }));
-    setMessage(""); // Hide the message when changing the number of rooms to 1
-  }
-};
-
-// Handle adults change logic
-const handleAdultsChange = (e) => {
-  const value = Number(e.target.value);
-  const totalGuests = value + children;
-
-  if (roomSelection.villa > 0) {
-    // Limit guests to 8 when villa is selected
-    if (totalGuests <= maxVillaCapacity) {
-      setAdults(value);
-    }
-  } else {
-    // Limit guests to 3 per room when room is selected
-    if (totalGuests <= roomSelection.rooms * maxGuestsPerRoom) {
-      setAdults(value);
+    if (value > 1) {
+      setShowVillaModal(true); // Show the modal when trying to select more than one room
     } else {
-      // Show message if guests exceed capacity per room
-      setMessage("You have exceeded the maximum guests per room. Please select an additional room.");
+      setRoomSelection((prevState) => ({
+        ...prevState,
+        rooms: value,
+      }));
+      setMessage("");
     }
-  }
-};
+  };
 
-// Handle children change logic
-const handleChildrenChange = (e) => {
-  const value = Number(e.target.value);
-  const totalGuests = adults + value;
+  // Handle adults change logic
+  const handleAdultsChange = (e) => {
+    const value = Number(e.target.value);
+    const totalGuests = value + children;
 
-  if (roomSelection.villa > 0) {
-    // Limit children to max villa capacity
-    if (totalGuests <= maxVillaCapacity) {
-      setChildren(value);
-    }
-  } else {
-    // Limit children to max room capacity
-    if (totalGuests <= roomSelection.rooms * maxGuestsPerRoom) {
-      setChildren(value);
+    if (roomSelection.villa > 0) {
+      // Limit guests to 8 when villa is selected
+      if (totalGuests <= maxVillaCapacity) {
+        setAdults(value);
+        setMessage("");
+      }
     } else {
-      // Show message if children exceed capacity per room
-      setMessage("You have exceeded the maximum guests per room. Please select an additional room.");
+      // Limit guests to 3 per room when room is selected
+      if (totalGuests <= roomSelection.rooms * maxGuestsPerRoom) {
+        setAdults(value);
+        setMessage("");
+      } else {
+        // Show message if guests exceed capacity per room
+        setMessage("You have exceeded the maximum 3 guests per room. Please select Villa.");
+      }
     }
-  }
-};
+  };
 
+  // Handle children change logic
+  const handleChildrenChange = (e) => {
+    const value = Number(e.target.value);
+    const totalGuests = adults + value;
+
+    if (roomSelection.villa > 0) {
+      // Limit children to max villa capacity
+      if (totalGuests <= maxVillaCapacity) {
+        setChildren(value);
+        setMessage("");
+
+      }
+    } else {
+      // Limit children to max room capacity
+      if (totalGuests <= roomSelection.rooms * maxGuestsPerRoom) {
+        setChildren(value);
+        setMessage("");
+
+      } else {
+        // Show message if children exceed capacity per room
+        setMessage("You have exceeded the maximum guests 3 per room. Please select Villa.");
+      }
+    }
+  };
+
+
+  const [accommodationType, setAccommodationType] = useState("rooms"); // To track the selected accommodation type
+
+  // Handle accommodation change logic
+  const handleAccommodationChange = (type) => {
+    setAccommodationType(type); // Update the selected accommodation type
+    if (type === "villa") {
+      setRoomSelection({ rooms: 0, villa: 1, huts: 0 }); // Reset rooms and huts, select 1 villa
+    } else if (type === "rooms") {
+      setRoomSelection({ rooms: 1, villa: 0, huts: 0 }); // Reset villa and huts, select 1 room
+    } else if (type === "huts") {
+      setRoomSelection({ rooms: 0, villa: 0, huts: 1 }); // Reset rooms and villa, select 1 hut
+    }
+  };
+
+  const images = accommodationType === "villa" ? villaImages : accommodationType === "huts" ? hutImages : roomImages;
+
+  const confirmVillaChange = () => {
+    setRoomSelection({ rooms: 0, villa: 1, huts: 0 });
+    setShowVillaModal(false); // Close the modal
+  };
+
+  const cancelVillaChange = () => {
+    setRoomSelection({ rooms: 1, villa: 0, huts: 0 });
+    setShowVillaModal(false); // Close the modal
+  };
 
   return (
     <div className="pt-8 flex flex-col lg:flex-row gap-6">
@@ -212,9 +252,54 @@ const handleChildrenChange = (e) => {
       </div>
 
       {/* Right Section - Booking Form */}
-      <div className="lg:w-1/3 bg-white p-6 min-h-[500px] shadow-lg">
+      <div className="lg:w-1/3 bg-white p-6  shadow-lg" style={{ height: divHeight, transition: 'height 0.3s ease' }}>
+
         {page === 1 && (
           <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+            {/* <label className="block text-sm font-medium mb-1 text-black">Accommodation Type</label> */}
+            {/* Accommodation Type */}
+            <div className="flex gap-4 justify-between bg-black p-2 rounded px-2">
+              <div>
+                <label htmlFor="rooms" className="cursor-pointer text-white">
+                  <input
+                    type="radio"
+                    id="rooms"
+                    name="accommodation"
+                    checked={roomSelection.villa === 0 && roomSelection.huts === 0}
+                    onChange={() => handleAccommodationChange("rooms")}
+                    className="mr-2"
+                  />
+                  Room
+                </label>
+              </div>
+              <div>
+                <label htmlFor="villa" className="cursor-pointer text-white">
+                  <input
+                    type="radio"
+                    id="villa"
+                    name="accommodation"
+                    checked={roomSelection.villa > 0}
+                    onChange={() => handleAccommodationChange("villa")}
+                    className="mr-2"
+                  />
+                  Villa
+                </label>
+              </div>
+              <div>
+                <label htmlFor="huts" className="cursor-pointer text-white">
+                  <input
+                    type="radio"
+                    id="huts"
+                    name="accommodation"
+                    checked={roomSelection.huts > 0}
+                    onChange={() => handleAccommodationChange("huts")}
+                    className="mr-2"
+                  />
+                  Hut
+                </label>
+              </div>
+            </div>
+
             {/* Check-in & Check-out */}
             <div>
               <label className="block text-sm font-medium mb-1 text-black">Check In</label>
@@ -223,7 +308,7 @@ const handleChildrenChange = (e) => {
                 min={today}
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg p-2 text-black"
+                className="w-full border border-gray-300 rounded-lg p-2 text-black cursor-pointer"
                 required
               />
             </div>
@@ -234,113 +319,141 @@ const handleChildrenChange = (e) => {
                 min={today}
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg p-2 text-black"
+                className="w-full border border-gray-300 rounded-lg p-2 text-black cursor-pointer"
                 required
               />
             </div>
 
-            {/* Rooms Selection */}
-            {roomSelection.villa === 0 && (
-              <div>
-                <label className="block text-sm font-medium mb-1 text-black">Rooms</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    min="0"
-                    max={maxRooms}
-                    value={roomSelection.rooms}
-                    onChange={handleRoomChange}
-                    className="w-40 border border-gray-300 rounded-lg p-2 text-black"
-                  />
-                  <span className="text-sm text-black">₹1000 / night</span>
-                  <span className="text-sm font-bold text-green-700">Total: ₹{roomSelection.rooms * 1000 * totalNights}</span>
-                </div>
-                <p className="text-xs text-red-900 mt-1">Each room can accommodate up to 3 guests.</p>
-                {roomSelection.rooms > 1 && (
-                  <p className="text-xs text-red-900 mt-1">
-                    You have selected more than 1 room. Please book a villa instead.
-                  </p>
+            {/* Conditional Rendering for Rooms, Villa, Huts, and Costs */}
+            {startDate && endDate && (
+              <>
+                {/* Rooms Selection */}
+                {roomSelection.villa === 0 && (
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-black">Rooms</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min="0"
+                        max={maxRooms}
+                        value={roomSelection.rooms}
+                        onChange={handleRoomChange}
+                        className="w-full border border-gray-300 rounded-lg p-2 text-black"
+                      />
+                      {/* <span className="text-sm text-black">₹1000 / night</span>
+                      <span className="text-sm font-bold text-green-700">Total: ₹{roomSelection.rooms * 1000 * totalNights}</span> */}
+                    </div>
+                    <p className="text-xs font-bold text-green-900 mt-1">Each room can accommodate up to 3 guests.</p>
+                    {roomSelection.rooms > 1 && (
+                      <p className="text-xs text-green-900 mt-1">
+                        You have selected more than 1 room. Please book a villa instead.
+                      </p>
+                    )}
+                  </div>
                 )}
-              </div>
-            )}
 
-            {/* Villa Selection */}
-            {roomSelection.villa > 0 && (
-              <div>
-                <label className="block text-sm font-medium mb-1 text-black">Villa</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    min="0"
-                    max={maxVillaCapacity}
-                    value={roomSelection.villa}
-                    onChange={(e) => setRoomSelection({ ...roomSelection, villa: Number(e.target.value) })}
-                    className="w-40 border border-gray-300 rounded-lg p-2 text-black"
-                  />
-                  <span className="text-sm text-black">₹5000 / night</span>
-                  <span className="text-sm font-bold text-green-700">Total: ₹{roomSelection.villa * 5000 * totalNights}</span>
+                {/* Villa Selection */}
+                {roomSelection.villa > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-black">Villa</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min="0"
+                        max={maxVillaCapacity}
+                        value={roomSelection.villa}
+                        onChange={(e) => setRoomSelection({ ...roomSelection, villa: Number(e.target.value) })}
+                        className="w-full border border-gray-300 rounded-lg p-2 text-black"
+                      />
+                      {/* <span className="text-sm text-black">₹5000 / night</span>
+                      <span className="text-sm font-bold text-green-700">Total: ₹{roomSelection.villa * 5000 * totalNights}</span> */}
+                    </div>
+                    <p className="text-xs text-green-900 mt-1">Each villa can accommodate up to 8 guests.</p>
+                  </div>
+                )}
+
+                {/* Guests Selection */}
+                <div className="flex flex-row gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-black">Adults</label>
+                    <input
+                      type="number"
+                      min="1"
+                      max=""
+                      value={adults}
+                      onChange={handleAdultsChange}
+                      className="w-full border border-gray-300 rounded-lg p-2 text-black"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-black">Children</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max=""
+                      value={children}
+                      onChange={handleChildrenChange}
+                      className="w-full border border-gray-300 rounded-lg p-2 text-black"
+                    />
+                  </div>
+
                 </div>
-                <p className="text-xs text-red-900 mt-1">Each villa can accommodate up to 8 guests.</p>
-              </div>
+                {message && (
+                  <p className="text-xs text-green-900 mt-1">{message}</p>
+                )}
+
+                {/* Huts Selection */}
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-black">Huts</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min="0"
+                      max={maxHutCapacity}
+                      value={roomSelection.huts}
+                      onChange={(e) => setRoomSelection({ ...roomSelection, huts: Number(e.target.value) })}
+                      className="w-full border border-gray-300 rounded-lg p-2 text-black"
+                    />
+                    {/* <span className="text-sm text-white bg-black">₹3000 / night</span>
+                    <span className="text-sm font-bold bg-black text-green-700">Total: ₹{roomSelection.huts * 3000 * totalNights}</span> */}
+                  </div>
+                  {/* <p className="text-xs text-green-900 mt-1">Each hut can accommodate up to 6 guests.</p> */}
+                </div>
+
+                {/* Cost & Submit */}
+                <div className="flex flex-row justify-between">
+                  <div className="text-black text-[18px] font-bold">Total Amount:</div>
+                  <div className="text-black text-[18px] font-bold">{totalCost}</div>
+                </div>
+                <div className="flex flex-row justify-between">
+                  <div className="text-black text-[18px] font-bold">Total Nights:</div>
+                  <div className="text-black text-[18px] font-bold">{totalNights}</div>
+                </div>
+                
+              </>
             )}
 
-            {/* Guests Selection */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-1 text-black">Adults</label>
-                <input
-                  type="number"
-                  min="1"
-                  max=""
-                  value={adults}
-                  onChange={handleAdultsChange}
-                  className="w-full border border-gray-300 rounded-lg p-2 text-black"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1 text-black">Children</label>
-                <input
-                  type="number"
-                  min="0"
-                  max=""
-                  value={children}
-                  onChange={handleChildrenChange}
-                  className="w-full border border-gray-300 rounded-lg p-2 text-black"
-                />
-              </div>
-              {message && (
-                <p className="text-xs text-red-900 mt-1">{message}</p>
-              )}
-            </div>
-
-            {/* Huts Selection */}
-            <div>
-              <label className="block text-sm font-medium mb-1 text-black">Huts</label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  min="0"
-                  max={maxHutCapacity}
-                  value={roomSelection.huts}
-                  onChange={(e) => setRoomSelection({ ...roomSelection, huts: Number(e.target.value) })}
-                  className="w-40 border border-gray-300 rounded-lg p-2 text-black"
-                />
-                <span className="text-sm text-black">₹3000 / night</span>
-                <span className="text-sm font-bold text-green-700">Total: ₹{roomSelection.huts * 3000 * totalNights}</span>
-              </div>
-              <p className="text-xs text-red-900 mt-1">Each hut can accommodate up to 6 guests.</p>
-            </div>
-
-            {/* Cost & Submit */}
-            <p className="text-lg font-bold text-black">Total Cost: INR {totalCost}</p>
-            <p className="text-lg font-bold text-black">Total Night: {totalNights}</p>
             <button
               onClick={handleNextPage}
               className="w-full bg-black text-white py-2 rounded-lg hover:bg-blue-600"
+              disabled={!startDate || !endDate}
             >
               Next
             </button>
           </form>
+        )}
+        {/* Confirmation Modal */}
+        {showVillaModal && (
+          <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+            <div className="bg-black p-6 rounded-lg w-96">
+              <h3 className="text-lg font-bold mb-4 ">Confirmation</h3>
+              <p className="mb-4">You have selected more than 1 room. Would you like to switch to a full villa instead?</p>
+              <div className="flex justify-end gap-4">
+                <button onClick={confirmVillaChange} className="bg-green-500 text-white py-2 px-4 rounded-lg">Yes</button>
+                <button onClick={cancelVillaChange} className="bg-gray-500 text-white py-2 px-4 rounded-lg">No</button>
+              </div>
+            </div>
+          </div>
         )}
 
         {page === 2 && (
@@ -376,14 +489,14 @@ const handleChildrenChange = (e) => {
               />
             </div>
 
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium mb-1 text-black">Message</label>
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg p-2 text-black"
               />
-            </div>
+            </div> */}
 
             <button
               onClick={handlePayment}
