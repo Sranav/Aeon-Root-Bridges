@@ -194,15 +194,19 @@ const VilaBooking = () => {
 
   const [accommodationType, setAccommodationType] = useState("rooms"); // To track the selected accommodation type
 
+  
+
   // Handle accommodation change logic
   const handleAccommodationChange = (type) => {
-    setAccommodationType(type); // Update the selected accommodation type
     if (type === "villa") {
-      setRoomSelection({ rooms: 0, villa: 1, huts: 0 }); // Reset rooms and huts, select 1 villa
+      setAccommodationType("villa");
+      setRoomSelection({ rooms: 0, villa: 1, huts: 0 });
     } else if (type === "rooms") {
-      setRoomSelection({ rooms: 1, villa: 0, huts: 0 }); // Reset villa and huts, select 1 room
+      setAccommodationType("rooms");
+      setRoomSelection({ rooms: 1, villa: 0, huts: 0 });
     } else if (type === "huts") {
-      setRoomSelection({ rooms: 0, villa: 0, huts: 1 }); // Reset rooms and villa, select 1 hut
+      setAccommodationType("huts");
+      setRoomSelection({ rooms: 0, villa: 0, huts: 1 });
     }
   };
 
@@ -353,24 +357,7 @@ const VilaBooking = () => {
                 )}
 
                 {/* Villa Selection */}
-                {roomSelection.villa > 0 && (
-                  <div>
-                    <label className="block text-sm font-medium mb-1 text-black">Villa</label>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="number"
-                        min="0"
-                        max={maxVillaCapacity}
-                        value={roomSelection.villa}
-                        onChange={(e) => setRoomSelection({ ...roomSelection, villa: Number(e.target.value) })}
-                        className="w-full border border-gray-300 rounded-lg p-2 text-black"
-                      />
-                      {/* <span className="text-sm text-black">₹5000 / night</span>
-                      <span className="text-sm font-bold text-green-700">Total: ₹{roomSelection.villa * 5000 * totalNights}</span> */}
-                    </div>
-                    <p className="text-xs text-green-900 mt-1">Each villa can accommodate up to 8 guests.</p>
-                  </div>
-                )}
+                
 
                 {/* Guests Selection */}
                 <div className="flex flex-row gap-4">
@@ -403,6 +390,7 @@ const VilaBooking = () => {
                 )}
 
                 {/* Huts Selection */}
+                
                 <div>
                   <label className="block text-sm font-medium mb-1 text-black">Huts</label>
                   <div className="flex items-center gap-2">
