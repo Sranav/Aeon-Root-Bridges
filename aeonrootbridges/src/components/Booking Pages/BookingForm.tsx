@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 enum ROOM_TYPE {
-    ROOM ='rooms',
-    VILLA ='villa',
-    HUT ='hut'
+    ROOM = 'rooms',
+    VILLA = 'villa',
+    HUT = 'hut'
 }
 const BookingForm = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [roomSelection, setRoomSelection] = useState({
-        type:ROOM_TYPE.ROOM,
+        type: ROOM_TYPE.ROOM,
         rooms: 1,
         villa: 1,
         huts: 0,
@@ -30,7 +30,15 @@ const BookingForm = () => {
     const [isVillaConfirmed, setIsVillaConfirmed] = useState(false); // For confirming villa selection
     const [isDateAvailable, setIsDateAvailable] = useState(true);
     const [availabilityMessage, setAvailabilityMessage] = useState("");
-    
+    const [guestError, setGuestError] = useState("");
+    const [isGuestLimitExceeded, setGuestLimitExceeded] = useState(false);
+    const [warningMessage, setWarningMessage] = useState("");
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [otp, setOtp] = useState("");
+    const correctOtp = "123456"; // Manually set OTP
+    const formattedStartDate = startDate ? new Date(startDate).toISOString().split("T")[0] : "";
+    const formattedEndDate = endDate ? new Date(endDate).toISOString().split("T")[0] : "";
+
 
     // Constants
     const maxGuestsPerRoom = 3;
@@ -58,40 +66,40 @@ const BookingForm = () => {
         const checkAvailability = async () => {
             if (!startDate || !endDate) return;
 
-            // Check if the dates are valid Date objects
             if (isNaN(new Date(startDate)) || isNaN(new Date(endDate))) {
-                console.error("Invalid Date: ", startDate, endDate);
-                return; // Don't proceed if dates are invalid
+                console.error("Invalid Date:", startDate, endDate);
+                return;
             }
 
-            // Determine accommodation type
-            let accommodationType = "";
-            if (roomSelection.villa > 0) {
-                accommodationType = "villa";
-            } else if (roomSelection.huts > 0) {
-                accommodationType = "hut";
-            } else {
-                accommodationType = "rooms";
-            }
+            let accommodationType = roomSelection.type;
+
+            console.log("Checking availability with:", {
+                accommodationType,
+                startDate,
+                endDate
+            });
 
             try {
-                // Clear previous messages when changing selections
-                setMessage("");
+                setAvailabilityMessage(""); // Clear previous availability messages
 
                 const response = await axios.post("https://express-backend-latest.onrender.com/check-availability", {
                     accommodationType,
                     startDate,
-                    endDate,
+                    endDate
                 });
 
+                console.log("Response from backend:", response.data);
+
                 if (!response.data.available) {
-                    setMessage("❌ The selected dates are already booked. Please choose different dates.");
+                    setAvailabilityMessage("❌ The selected dates are already booked. Please choose different dates.");
+                    setIsDateAvailable(false);  // Set availability state to false
                 } else {
-                    setMessage(""); // Clear message if available
+                    setAvailabilityMessage(""); // Clear message if available
+                    setIsDateAvailable(true); // Set availability state to true
                 }
             } catch (error) {
-                console.error("Error checking availability:", error);
-                setMessage("⚠️ Error checking availability. Please try again.");
+                console.error("Error checking availability:", error?.response?.data || error);
+                setAvailabilityMessage("⚠️ Error checking availability. Please try again.");
             }
         };
 
@@ -105,13 +113,13 @@ const BookingForm = () => {
 
             try {
                 const response = await axios.post('https://express-backend-latest.onrender.com/book', {
-                    accommodationType: roomSelection.type ,
+                    accommodationType: roomSelection.type,
                     startDate: startDate,
                     endDate: endDate,
-                    
-                    ...(roomSelection.type === ROOM_TYPE.ROOM ) && {rooms: roomSelection.rooms},                    
-                    ...(roomSelection.type === ROOM_TYPE.VILLA ) && {villaRooms: roomSelection.villa},                    
-                    hutRooms:roomSelection.huts,                    
+
+                    ...(roomSelection.type === ROOM_TYPE.ROOM) && { rooms: roomSelection.rooms },
+                    ...(roomSelection.type === ROOM_TYPE.VILLA) && { villaRooms: roomSelection.villa },
+                    hutRooms: roomSelection.huts,
                     adults,
                     children,
                 });
@@ -128,39 +136,27 @@ const BookingForm = () => {
         };
 
         fetchTotalCostAndNights();
-    }, [startDate, endDate, roomSelection.type,roomSelection.villa,roomSelection.huts,roomSelection.rooms,adults,children]); // Only depend on roomSelection changes
+    }, [startDate, endDate, roomSelection.type, roomSelection.villa, roomSelection.huts, roomSelection.rooms, adults, children]); // Only depend on roomSelection changes
 
     // Handle search (submit)
-    const handleSearch = async (e) => {
-        e.preventDefault();
+    const handleSearch = async (e?: React.FormEvent) => {
+        if (e) {
+            e.preventDefault(); // Only call preventDefault if e is present
+        }
+
         if (!isDateAvailable) {
-            setMessage("The selected dates are not available. Please choose different dates.");
+            setAvailabilityMessage("❌ The selected dates are already booked. Please choose different dates.");
             return;
         }
 
         if (typeof window.Razorpay === "undefined") {
             console.error("Razorpay is not loaded properly.");
-            setMessage("Error loading Razorpay.");
+            setAvailabilityMessage("Error loading Razorpay.");
             return;
         }
 
         try {
-            // Step 1: Check availability
-            const availabilityResponse = await axios.post("https://express-backend-latest.onrender.com/check-availability", {
-                accommodationType: roomSelection.type,
-                startDate,
-                endDate,
-            });
-
-            console.log("Availability Response:", availabilityResponse.data);
-
-            // Check if the response indicates the dates are booked
-            if (!availabilityResponse.data.available) {
-                setMessage(availabilityResponse.data.message || "The selected dates are already booked. Please choose different dates.");
-                return; // Stop further execution if dates are unavailable
-            }
-
-            // Step 2: Proceed with booking if available
+            // Proceed with booking if the dates are available
             const response = await axios.post("https://express-backend-latest.onrender.com/book", {
                 accommodationType: roomSelection.type,
                 startDate,
@@ -170,14 +166,13 @@ const BookingForm = () => {
                 adults,
                 children,
             });
-            
 
             if (response.status === 200) {
                 const { totalNights: nights, totalCost: cost } = response.data;
                 setTotalNights(nights);
                 setTotalCost(cost);
 
-                // Step 3: Create Razorpay order for payment
+                // Create Razorpay order
                 const orderResponse = await axios.post("https://express-backend-latest.onrender.com/create-order", {
                     amount: cost,
                     currency: "INR",
@@ -203,7 +198,7 @@ const BookingForm = () => {
                             endDate,
                             userDetails: { name, email, phone },
                             totalAmount: cost,
-                            rooms: roomSelection.type===ROOM_TYPE.ROOM ? roomSelection.rooms : roomSelection.type===ROOM_TYPE.VILLA ? roomSelection.villa : roomSelection.huts,
+                            rooms: roomSelection.type === ROOM_TYPE.ROOM ? roomSelection.rooms : roomSelection.type === ROOM_TYPE.VILLA ? roomSelection.villa : roomSelection.huts,
                             adults,
                             children,
                             villaRooms: roomSelection.villa,
@@ -212,13 +207,13 @@ const BookingForm = () => {
 
                         try {
                             const verifyPaymentResponse = await axios.post("https://express-backend-latest.onrender.com/verify-payment", paymentData);
-                            setMessage(verifyPaymentResponse.data.message);
+                            setAvailabilityMessage(verifyPaymentResponse.data.message);
                             if (verifyPaymentResponse.data.success) {
                                 const saveBookingResponse = await axios.post("https://express-backend-latest.onrender.com/save-booking", {
                                     accommodationType: roomSelection.type,
                                     startDate,
                                     endDate,
-                                    rooms: roomSelection.type===ROOM_TYPE.ROOM ? roomSelection.rooms : roomSelection.type===ROOM_TYPE.VILLA ? roomSelection.villa : roomSelection.huts,
+                                    rooms: roomSelection.type === ROOM_TYPE.ROOM ? roomSelection.rooms : roomSelection.type === ROOM_TYPE.VILLA ? roomSelection.villa : roomSelection.huts,
                                     adults,
                                     children,
                                     totalCost: cost,
@@ -227,12 +222,13 @@ const BookingForm = () => {
                                 });
 
                                 if (saveBookingResponse.status === 200) {
-                                    navigate("/"); // Redirect to home page after successful booking
+                                    navigate("/villabooking"); // Redirect after successful booking
+                                    console.log('Payment verified and booking saved, about to navigate...');
                                 }
                             }
                         } catch (error) {
                             console.error("Error verifying payment:", error);
-                            setMessage("Payment verification failed!");
+                            setAvailabilityMessage("⚠️ Payment verification failed!");
                         }
                     },
                     prefill: { name, email, phone },
@@ -244,9 +240,10 @@ const BookingForm = () => {
             }
         } catch (error) {
             console.error("Error during booking:", error);
-            setMessage(error.response?.data?.message || "An error occurred.");
+            setAvailabilityMessage(error.response?.data?.message || "⚠️ An error occurred.");
         }
     };
+
     // Handle next/prev page
     const handleNextPage = async () => {
         if (!startDate || !endDate) {
@@ -254,15 +251,16 @@ const BookingForm = () => {
             return;
         }
 
-        // Determine accommodation type
-        let accommodationType = "";
-        if (roomSelection.villa > 0) {
-            accommodationType = "villa";
-        } else if (roomSelection.huts > 0) {
-            accommodationType = "hut";
-        } else {
-            accommodationType = "rooms";
+        // Ensure the user cannot proceed if dates are unavailable
+        if (message.includes("❌")) {
+            return;
         }
+
+        let accommodationType = roomSelection.type;
+
+        // Optimistically go to the next page and show a loading indicator
+        setPage(2);
+        setMessage("⏳ Checking availability...");
 
         try {
             const response = await axios.post("https://express-backend-latest.onrender.com/check-availability", {
@@ -273,11 +271,10 @@ const BookingForm = () => {
 
             if (!response.data.available) {
                 setMessage("❌ The selected dates are already booked. Please choose different dates.");
-                return; // Don't proceed to the next page if dates are not available
+                setPage(1); // Move back if unavailable
+            } else {
+                setMessage(""); // Clear message if available
             }
-
-            // If available, proceed to the next page
-            setPage(2);
         } catch (error) {
             console.error("Error checking availability:", error);
             setMessage("⚠️ Error checking availability. Please try again.");
@@ -291,36 +288,52 @@ const BookingForm = () => {
     const [accommodationType, setAccommodationType] = useState("rooms"); // To track the selected accommodation type
 
     // Handle accommodation change logic
-    const handleAccommodationChange = (type:ROOM_TYPE) => {
-        setRoomSelection(prev=>({...prev,type,huts:type===ROOM_TYPE.HUT ? 1:0}))
-        
+    const handleAccommodationChange = (type: ROOM_TYPE) => {
+        setRoomSelection(prev => ({ ...prev, type, huts: type === ROOM_TYPE.HUT ? 1 : 0 }))
+
     };
 
 
 
     const confirmRoomChange = () => {
-        setRoomSelection(prev=>({...prev,rooms:1,type:ROOM_TYPE.VILLA}))// Switch to villa
-       
-        
+        setRoomSelection(prev => ({ ...prev, rooms: 1, type: ROOM_TYPE.VILLA }))// Switch to villa
+
+
     };
 
     const cancelRoomChange = () => {
-        setRoomSelection(prev=>({...prev,rooms:1}))// Switch to villa
-       
+        setRoomSelection(prev => ({ ...prev, rooms: 1 }))// Switch to villa
+
     };
 
     console.log("Sending to backend:", {
-    accommodationType: roomSelection.type,
-    startDate: startDate,
-    endDate: endDate,
-    rooms: roomSelection.rooms,
-    villaRooms: roomSelection.villa,
-    hutRooms: roomSelection.huts,
-    adults,
-    children,
-});
+        accommodationType: roomSelection.type,
+        startDate: startDate,
+        endDate: endDate,
+        rooms: roomSelection.rooms,
+        villaRooms: roomSelection.villa,
+        hutRooms: roomSelection.huts,
+        adults,
+        children,
+    });
 
-    
+
+
+    const handleOpenModal = () => {
+        setModalOpen(true);
+    };
+
+    const handleOtpSubmit = () => {
+        console.log("OTP Submitted: ", otp); // Log OTP to see if it's being entered correctly
+        if (otp === correctOtp) {
+            console.log("OTP is correct, proceeding with search...");
+            setModalOpen(false);
+            handleSearch(); // Trigger search after OTP verification
+        } else {
+            alert("Please enter a valid 6-digit OTP.");
+            console.log("OTP mismatch!"); // Log OTP mismatch
+        }
+    };
 
     return (
         <>
@@ -334,7 +347,7 @@ const BookingForm = () => {
                                     type="radio"
                                     id="rooms"
                                     name="accommodation"
-                                    checked={roomSelection.type===ROOM_TYPE.ROOM}
+                                    checked={roomSelection.type === ROOM_TYPE.ROOM}
                                     onChange={() => handleAccommodationChange(ROOM_TYPE.ROOM)}
                                     className="mr-2"
                                 />
@@ -348,7 +361,7 @@ const BookingForm = () => {
                                     id="villa"
                                     name="accommodation"
                                     value='villa'
-                                    checked={roomSelection.type===ROOM_TYPE.VILLA}
+                                    checked={roomSelection.type === ROOM_TYPE.VILLA}
                                     onChange={() => handleAccommodationChange(ROOM_TYPE.VILLA)}
                                     className="mr-2"
                                 />
@@ -361,7 +374,7 @@ const BookingForm = () => {
                                     type="radio"
                                     id="huts"
                                     name="accommodation"
-                                    checked={roomSelection.type===ROOM_TYPE.HUT}
+                                    checked={roomSelection.type === ROOM_TYPE.HUT}
                                     onChange={() => handleAccommodationChange(ROOM_TYPE.HUT)}
                                     className="mr-2"
                                 />
@@ -400,7 +413,7 @@ const BookingForm = () => {
                     {startDate && endDate && (
                         <>
                             {/* Rooms Selection */}
-                            {roomSelection.type===ROOM_TYPE.ROOM && (
+                            {roomSelection.type === ROOM_TYPE.ROOM && (
                                 <div>
                                     <label className="block text-sm font-medium mb-1 text-black">Rooms</label>
                                     <div className="flex items-center gap-2">
@@ -423,7 +436,7 @@ const BookingForm = () => {
                             )}
 
                             {/* Villa Selection */}
-                            {roomSelection.type===ROOM_TYPE.VILLA && (
+                            {roomSelection.type === ROOM_TYPE.VILLA && (
                                 <div>
                                     <label className="block text-sm font-medium mb-1 text-black">Villa</label>
                                     <div className="flex items-center gap-2">
@@ -440,8 +453,8 @@ const BookingForm = () => {
                                 </div>
                             )}
                             {/* Huts Selection */}
-                            {roomSelection.type ===ROOM_TYPE.HUT &&
-                                    <div>
+                            {roomSelection.type === ROOM_TYPE.HUT &&
+                                <div>
                                     <label className="block text-sm font-medium mb-1 text-black">Huts</label>
                                     <div className="flex items-center gap-2">
                                         <input
@@ -458,19 +471,38 @@ const BookingForm = () => {
                             }
 
                             {/* Guests Selection */}
-                            <div className="flex flex-row gap-4">
+
+                            {roomSelection.type === ROOM_TYPE.ROOM &&
                                 <div>
-                                    <label className="block text-sm font-medium mb-1 text-black">Adults</label>
+                                    <label className="block text-sm font-medium mb-1 text-black">No of Guests</label>
                                     <input
                                         type="number"
                                         min="1"
-                                        max=""
+                                        max="3"
                                         value={adults}
                                         onChange={(e) => setAdults(Number(e.target.value))}
+
                                         className="w-full border border-gray-300 rounded-lg p-2 text-black"
+
                                     />
                                 </div>
+                            }
+                            {roomSelection.type === ROOM_TYPE.VILLA &&
                                 <div>
+                                    <label className="block text-sm font-medium mb-1 text-black">No of Guests</label>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max="8"
+                                        value={adults}
+                                        onChange={(e) => setAdults(Number(e.target.value))}
+
+                                        className="w-full border border-gray-300 rounded-lg p-2 text-black"
+
+                                    />
+                                </div>
+                            }
+                            {/* <div>
                                     <label className="block text-sm font-medium mb-1 text-black">Children</label>
                                     <input
                                         type="number"
@@ -478,17 +510,18 @@ const BookingForm = () => {
                                         max=""
                                         value={children}
                                         onChange={(e) => setChildren(Number(e.target.value))}
+                                       
                                         className="w-full border border-gray-300 rounded-lg p-2 text-black"
                                     />
-                                </div>
-                            </div>
-                            {message && (
-                                <p className="text-xs text-green-900 mt-1">{message}</p>
+                                </div> */}
+
+                            {guestError && (
+                                <p className="text-sm text-red-600">{guestError}</p>
                             )}
 
                             {/* Huts Selection */}
-                            {roomSelection.type !==ROOM_TYPE.HUT &&
-                                    <div>
+                            {roomSelection.type !== ROOM_TYPE.HUT &&
+                                <div>
                                     <label className="block text-sm font-medium mb-1 text-black">Huts</label>
                                     <div className="flex items-center gap-2">
                                         <input
@@ -503,7 +536,37 @@ const BookingForm = () => {
                                     <p className="text-xs text-green-900 mt-1">Each hut can accommodate up to 6 guests.</p>
                                 </div>
                             }
-                            
+                            {roomSelection.type !== ROOM_TYPE.HUT &&
+                                <div>
+                                    <label className="block text-sm font-medium mb-1 text-black">Number of Guest</label>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max="3"
+                                        value={children}
+                                        onChange={(e) => setChildren(Number(e.target.value))}
+
+                                        className="w-full border border-gray-300 rounded-lg p-2 text-black"
+
+                                    />
+                                </div>
+                            }
+                            {roomSelection.type === ROOM_TYPE.HUT &&
+                                <div>
+                                    <label className="block text-sm font-medium mb-1 text-black">No Of Guest</label>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max="3"
+                                        value={children}
+                                        onChange={(e) => setChildren(Number(e.target.value))}
+
+                                        className="w-full border border-gray-300 rounded-lg p-2 text-black"
+
+                                    />
+                                </div>
+                            }
+
 
                             {/* Cost & Submit */}
                             <div className="flex flex-row justify-between">
@@ -520,7 +583,7 @@ const BookingForm = () => {
                     <button
                         onClick={handleNextPage}
                         className="w-full bg-black text-white py-2 rounded-lg hover:bg-blue-600"
-                        disabled={!startDate || !endDate}
+                        disabled={!startDate || !endDate || !!guestError}
                     >
                         Next
                     </button>
@@ -578,15 +641,42 @@ const BookingForm = () => {
                     </div>
 
                     <button
-                        onClick={handleSearch} // Use handleSearch for payment and booking submission
-                        className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600"
-                        disabled={isLoading}
+                        onClick={handleOpenModal}
+                        className="w-full bg-black text-white py-2 rounded-lg hover:bg-green-600"
                     >
-                        {isLoading ? "Processing..." : "Make Payment"}
+                        Make Payment
                     </button>
                     <button onClick={handlePrevPage} className="w-full bg-gray-400 text-white py-2 rounded-lg hover:bg-gray-500">
                         Previous
                     </button>
+                </div>
+
+            )}
+            {isModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+                        <h2 className="text-lg font-semibold mb-4">Enter OTP</h2>
+                        <input
+                            type="text"
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value)}
+                            className="w-full border border-gray-300 rounded-lg p-2 text-black mb-4"
+                            maxLength={6}
+                            placeholder="Enter 6-digit OTP"
+                        />
+                        <button
+                            onClick={handleOtpSubmit}
+                            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+                        >
+                            Submit OTP
+                        </button>
+                        <button
+                            onClick={() => setModalOpen(false)}
+                            className="w-full mt-2 bg-gray-400 text-white py-2 rounded-lg hover:bg-gray-500"
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </div>
             )}
         </>

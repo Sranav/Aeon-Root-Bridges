@@ -20,13 +20,13 @@ const Villabooking = () => {
       {/* <div className='lg:mx-20 pt-20 pb-10'>
         <HotelDetails/>
       </div> */}
-      <div className='lg:mx-20 pt-20 pb-10'>
+      <div className='lg:mx-20 lg:pt-20 pb-10'>
         <RoomDetails/>
       </div>
-      <div className='lg:mx-20 pt-20 pb-10'>
+      <div className='lg:mx-20 lg:pt-20 pb-10 lg:p-0 xs:p-4'>
         <OtherProperties/>
       </div>
-      <div className='lg:mx-20 pb-10 pt-14 xs:px-6 lg:px-0'>
+      <div className='lg:mx-20 pb-10 lg:pt-14 xs:px-6 lg:px-0'>
       <HomeFooter/>
       </div>
     </div>
